@@ -30,10 +30,34 @@ interface StrikeLog {
   };
 }
 
-export const BossCard: React.FC = () => {
+interface BossCardProps {
+  lastDamage?: { damage: number; isCrit?: boolean; timestamp: number } | null;
+}
+
+export const BossCard: React.FC<BossCardProps> = ({ lastDamage }) => {
   const [boss, setBoss] = useState<BossEncounter | null>(null);
   const [recentStrikes, setRecentStrikes] = useState<StrikeLog[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isHit, setIsHit] = useState(false);
+  const [floatingDamage, setFloatingDamage] = useState<{ id: number; damage: number; isCrit?: boolean } | null>(null);
+
+  // Trigger shake & floating damage on new hit
+  useEffect(() => {
+    if (lastDamage && lastDamage.damage > 0) {
+      setIsHit(true);
+      setFloatingDamage({ id: Date.now(), damage: lastDamage.damage, isCrit: lastDamage.isCrit });
+      const timer = setTimeout(() => {
+        setIsHit(false);
+      }, 450);
+      const floatTimer = setTimeout(() => {
+        setFloatingDamage(null);
+      }, 1200);
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(floatTimer);
+      };
+    }
+  }, [lastDamage]);
 
   const fetchBoss = async () => {
     try {
@@ -71,7 +95,30 @@ export const BossCard: React.FC = () => {
   const weaknessMeta = ATTRIBUTE_METADATA[weaknessKey];
 
   return (
-    <div className="rounded-2xl border border-rose-900/40 bg-gradient-to-b from-slate-900 via-rose-950/25 to-slate-900 p-5 shadow-xl backdrop-blur-sm relative overflow-hidden ambient-glow-rose interactive-card">
+    <div
+      className={`rounded-2xl border border-rose-900/40 bg-gradient-to-b from-slate-900 via-rose-950/25 to-slate-900 p-5 shadow-xl backdrop-blur-sm relative overflow-hidden ambient-glow-rose interactive-card transition-all ${
+        isHit ? 'boss-shake ring-2 ring-rose-500/80' : ''
+      }`}
+    >
+      {/* Floating Combat Damage Numbers */}
+      {floatingDamage && (
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 z-30 pointer-events-none float-damage flex flex-col items-center">
+          <span
+            className={`font-black tracking-wider text-xl drop-shadow-lg font-mono ${
+              floatingDamage.isCrit
+                ? 'text-yellow-300 scale-125 [text-shadow:_0_0_12px_rgb(234_179_8)]'
+                : 'text-rose-400 [text-shadow:_0_0_10px_rgb(244_63_94)]'
+            }`}
+          >
+            -{floatingDamage.damage} DMG!
+          </span>
+          {floatingDamage.isCrit && (
+            <span className="text-[10px] font-black uppercase tracking-widest text-amber-300 bg-amber-950/90 border border-amber-400/50 px-2 py-0.5 rounded-full mt-0.5">
+              💥 CRITICAL HIT!
+            </span>
+          )}
+        </div>
+      )}
       {/* Background ambient red glow */}
       <div className="absolute -top-10 -right-10 h-36 w-36 rounded-full bg-rose-600/15 blur-3xl pointer-events-none" />
 

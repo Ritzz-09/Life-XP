@@ -21,6 +21,8 @@ import { SkillTreeModal } from '@/components/SkillTreeModal';
 import { AchievementsModal } from '@/components/AchievementsModal';
 import { PartyHub } from '@/components/PartyHub';
 import { LifeRadarChart } from '@/components/LifeRadarChart';
+import { AutoForgeModal } from '@/components/AutoForgeModal';
+import { ShareHeroModal } from '@/components/ShareHeroModal';
 import {
   Swords,
   Plus,
@@ -97,6 +99,7 @@ export default function Home() {
     nextBossName: '',
     lootChest: null,
   });
+  const [lastBossDamage, setLastBossDamage] = useState<{ damage: number; isCrit?: boolean; timestamp: number } | null>(null);
 
   // New Mega Feature Modals
   const [focusModal, setFocusModal] = useState<{ isOpen: boolean; quest: QuestItem | null }>({
@@ -106,6 +109,8 @@ export default function Home() {
   const [skillTreeOpen, setSkillTreeOpen] = useState(false);
   const [achievementsOpen, setAchievementsOpen] = useState(false);
   const [partyHubOpen, setPartyHubOpen] = useState(false);
+  const [autoForgeOpen, setAutoForgeOpen] = useState(false);
+  const [shareHeroOpen, setShareHeroOpen] = useState(false);
   const [readyAchievementsCount, setReadyAchievementsCount] = useState(0);
 
   const fetchAchievementsBadge = useCallback(async () => {
@@ -217,6 +222,16 @@ export default function Home() {
         if (data.character) {
           setCharacter(data.character);
         }
+        // Trigger Boss Damage Shake & Sound FX!
+        if (data.boss?.damageDealt && data.boss.damageDealt > 0) {
+          setLastBossDamage({
+            damage: data.boss.damageDealt,
+            isCrit: data.boss.isCrit,
+            timestamp: Date.now(),
+          });
+          soundFx.playHit();
+        }
+
         // Check for level up!
         if (data.progression?.leveledUp) {
           setLevelUpModal({
@@ -369,6 +384,7 @@ export default function Home() {
               onOpenInspect={() => setInspectModalOpen(true)}
               onOpenAvatarVault={() => setAvatarVaultOpen(true)}
               onOpenEditProfile={() => setEditProfileOpen(true)}
+              onShareHero={() => setShareHeroOpen(true)}
             />
             <StreakHeatmap
               currentStreak={character.streak}
@@ -438,6 +454,14 @@ export default function Home() {
                         </button>
                       )}
                     </div>
+                    <button
+                      onClick={() => setAutoForgeOpen(true)}
+                      className="game-btn flex items-center space-x-1.5 rounded-xl border border-cyan-500/40 bg-cyan-500/10 px-3 py-2 text-xs font-bold text-cyan-300 hover:bg-cyan-500/20 active:scale-95 transition shrink-0"
+                      title="Auto-Forge 5 Daily Routine Quests"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      <span className="hidden md:inline">Auto-Forge</span>
+                    </button>
                     <button
                       onClick={() => setCreateQuestOpen(true)}
                       className="game-btn flex items-center space-x-1.5 rounded-xl bg-amber-500 px-3.5 py-2 text-xs font-bold text-slate-950 shadow-md shadow-amber-500/20 hover:brightness-110 active:scale-95 transition shrink-0"
@@ -542,7 +566,7 @@ export default function Home() {
 
           {/* Right Column: World Boss Raid, Life Wheel Radar Chart & Armory Widget */}
           <div className="lg:col-span-3 space-y-6">
-            <BossCard />
+            <BossCard lastDamage={lastBossDamage} />
 
             {/* Hexagonal Life Wheel Balance Radar Chart */}
             <LifeRadarChart character={character} />
@@ -587,6 +611,13 @@ export default function Home() {
                       className="w-full rounded-xl border border-slate-800 bg-slate-950/70 pl-10 pr-4 py-2 text-xs text-slate-100 placeholder-slate-500 focus:border-amber-400 focus:outline-none transition"
                     />
                   </div>
+                  <button
+                    onClick={() => setAutoForgeOpen(true)}
+                    className="game-btn flex items-center space-x-1 rounded-xl border border-cyan-500/40 bg-cyan-500/10 px-2.5 py-2 text-xs font-bold text-cyan-300 active:scale-95 transition shrink-0"
+                    title="Auto-Forge"
+                  >
+                    <Sparkles className="h-4 w-4" />
+                  </button>
                   <button
                     onClick={() => setCreateQuestOpen(true)}
                     className="game-btn flex items-center space-x-1 rounded-xl bg-amber-500 px-3 py-2 text-xs font-bold text-slate-950 shadow-md shadow-amber-500/20 active:scale-95 transition shrink-0"
@@ -670,6 +701,7 @@ export default function Home() {
                 onOpenInspect={() => setInspectModalOpen(true)}
                 onOpenAvatarVault={() => setAvatarVaultOpen(true)}
                 onOpenEditProfile={() => setEditProfileOpen(true)}
+                onShareHero={() => setShareHeroOpen(true)}
               />
               <LifeRadarChart character={character} />
               <StreakHeatmap
@@ -688,7 +720,7 @@ export default function Home() {
 
           {activeTab === 'RAID' && (
             <div className="space-y-4">
-              <BossCard />
+              <BossCard lastDamage={lastBossDamage} />
             </div>
           )}
         </div>
@@ -700,6 +732,23 @@ export default function Home() {
         onChangeTab={(tab) => setActiveTab(tab)}
         onOpenCreateQuest={() => setCreateQuestOpen(true)}
       />
+
+      {/* Auto-Forge Daily Routine Modal */}
+      <AutoForgeModal
+        isOpen={autoForgeOpen}
+        onClose={() => setAutoForgeOpen(false)}
+        onQuestsForged={fetchSessionAndData}
+      />
+
+      {/* Sharable Hero Collectible Card Modal */}
+      {user && character && (
+        <ShareHeroModal
+          isOpen={shareHeroOpen}
+          onClose={() => setShareHeroOpen(false)}
+          user={user}
+          character={character}
+        />
+      )}
 
       {/* Create Quest Modal */}
       <CreateQuestModal

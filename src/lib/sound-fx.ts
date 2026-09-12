@@ -358,6 +358,85 @@ class SoundEffectsEngine {
       osc.stop(now + idx * 0.05 + 0.27);
     });
   }
+  /**
+   * Ambient Lo-Fi / Synthwave Focus Music Engine
+   */
+  private bgmPlaying: boolean = false;
+  private bgmInterval: NodeJS.Timeout | null = null;
+
+  public isBgmPlaying(): boolean {
+    return this.bgmPlaying;
+  }
+
+  public toggleBgm(): boolean {
+    if (this.bgmPlaying) {
+      this.stopBgm();
+      return false;
+    } else {
+      this.startBgm();
+      return true;
+    }
+  }
+
+  public startBgm() {
+    if (this.bgmPlaying) return;
+    const ctx = this.getContext();
+    if (!ctx) return;
+
+    this.bgmPlaying = true;
+
+    // Peaceful ambient chord progression: Cmaj7 -> Am7 -> Fmaj7 -> Gsus4
+    const chords = [
+      [261.63, 329.63, 392.00, 493.88], // C, E, G, B (Cmaj7)
+      [220.00, 261.63, 329.63, 392.00], // A, C, E, G (Am7)
+      [174.61, 220.00, 261.63, 329.63], // F, A, C, E (Fmaj7)
+      [196.00, 261.63, 293.66, 392.00], // G, C, D, G (Gsus4)
+    ];
+
+    let chordIndex = 0;
+
+    const playChordStep = () => {
+      if (!this.bgmPlaying || !this.enabled) return;
+      const curCtx = this.getContext();
+      if (!curCtx) return;
+
+      const now = curCtx.currentTime;
+      const currentChord = chords[chordIndex % chords.length];
+      const masterGain = this.getEffectiveGain(0.04); // subtle background level
+
+      currentChord.forEach((freq) => {
+        const osc = curCtx.createOscillator();
+        const gain = curCtx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+
+        // Gentle swell & release
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(masterGain, now + 1.2);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.8);
+
+        osc.connect(gain);
+        gain.connect(curCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + 4.0);
+      });
+
+      chordIndex++;
+    };
+
+    playChordStep();
+    this.bgmInterval = setInterval(playChordStep, 4000);
+  }
+
+  public stopBgm() {
+    this.bgmPlaying = false;
+    if (this.bgmInterval) {
+      clearInterval(this.bgmInterval);
+      this.bgmInterval = null;
+    }
+  }
 }
 
 export const soundFx = new SoundEffectsEngine();

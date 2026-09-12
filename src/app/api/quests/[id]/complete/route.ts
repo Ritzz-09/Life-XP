@@ -348,6 +348,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       boss: {
         damageDealt: bossDamage,
         remainingHp: bossRemainingHp,
+        isCrit: activeBoss ? activeBoss.weakness === attribute : false,
         bossSlain,
         defeatedBossName,
         nextBossName,

@@ -18,6 +18,7 @@ import {
   Clock,
   GitBranch,
   Swords,
+  Music,
 } from 'lucide-react';
 import { soundFx } from '@/lib/sound-fx';
 import { CharacterVisual } from './CharacterVisual';
@@ -72,6 +73,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [volume, setVolume] = useState(0.7);
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
+  const [isBgmOn, setIsBgmOn] = useState(false);
   const volumeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -305,6 +307,24 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </div>
                 )}
               </div>
+
+              {/* Ambient Lo-Fi Focus Music Toggle */}
+              <button
+                onClick={() => {
+                  const active = soundFx.toggleBgm();
+                  setIsBgmOn(active);
+                }}
+                className={`flex h-8 w-8 items-center justify-center rounded-lg border transition ${
+                  isBgmOn
+                    ? 'border-purple-500 bg-purple-500/20 text-purple-300 ring-1 ring-purple-400 shadow-sm'
+                    : theme === 'dark'
+                    ? 'border-slate-800 bg-slate-900/60 text-slate-400 hover:text-purple-300'
+                    : 'border-slate-300 bg-white text-slate-700 hover:text-purple-600'
+                }`}
+                title={isBgmOn ? 'Stop Ambient Focus Music' : 'Play Ambient Lo-Fi Focus Music'}
+              >
+                <Music className={`h-3.5 w-3.5 ${isBgmOn ? 'text-purple-400 animate-pulse' : ''}`} />
+              </button>
 
               {/* Theme Toggle */}
               <button

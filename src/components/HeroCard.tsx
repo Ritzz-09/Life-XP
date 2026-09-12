@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Box,
   UserCog,
+  Share2,
 } from 'lucide-react';
 import { getXpRequiredForNextLevel, ATTRIBUTE_METADATA } from '@/lib/rpg-engine';
 import { CharacterVisual, getEvolutionStage } from './CharacterVisual';
@@ -48,6 +49,7 @@ interface HeroCardProps {
   onOpenInspect?: () => void;
   onOpenAvatarVault?: () => void;
   onOpenEditProfile?: () => void;
+  onShareHero?: () => void;
 }
 
 export const HeroCard: React.FC<HeroCardProps> = ({
@@ -57,6 +59,7 @@ export const HeroCard: React.FC<HeroCardProps> = ({
   onOpenInspect,
   onOpenAvatarVault,
   onOpenEditProfile,
+  onShareHero,
 }) => {
   const [show3DHero, setShow3DHero] = useState(true);
   const nextLevelXp = getXpRequiredForNextLevel(character.level);
@@ -154,6 +157,17 @@ export const HeroCard: React.FC<HeroCardProps> = ({
             >
               <Award className="h-3 w-3" />
               <span>Avatars</span>
+            </button>
+          )}
+
+          {onShareHero && (
+            <button
+              onClick={onShareHero}
+              className="flex items-center justify-center space-x-1 rounded-lg py-1 px-2.5 text-[11px] font-semibold text-purple-400 hover:text-purple-200 hover:bg-purple-500/10 transition active:scale-95"
+              title="Share Hero Collectible Card"
+            >
+              <Share2 className="h-3 w-3" />
+              <span>Share</span>
             </button>
           )}
 
