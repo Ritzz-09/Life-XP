@@ -31,11 +31,27 @@ export default function Home() {
   const [quests, setQuests] = useState<QuestItem[]>([]);
 
   // Filters & State
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [activeTab, setActiveTab] = useState<'QUESTS' | 'HERO' | 'SHOP' | 'RAID'>('QUESTS');
   const [desktopView, setDesktopView] = useState<'BOARD' | 'SHOP'>('BOARD');
   const [questTypeFilter, setQuestTypeFilter] = useState('ALL');
   const [attributeFilter, setAttributeFilter] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Initialize theme on client
+  useEffect(() => {
+    const saved = localStorage.getItem('liferpg_theme') as 'dark' | 'light' | null;
+    const initialTheme = saved || 'dark';
+    setTheme(initialTheme);
+    document.documentElement.setAttribute('data-theme', initialTheme);
+  }, []);
+
+  const handleToggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    localStorage.setItem('liferpg_theme', next);
+    document.documentElement.setAttribute('data-theme', next);
+  };
 
   // Modals
   const [createQuestOpen, setCreateQuestOpen] = useState(false);
@@ -193,14 +209,35 @@ export default function Home() {
   const pendingCount = quests.filter((q) => !q.isCompleted).length;
 
   return (
-    <div className="min-h-screen bg-[#080c14] text-slate-100 pb-20 lg:pb-8 flex flex-col">
+    <div className="min-h-screen cyber-bg-overlay pb-20 lg:pb-8 flex flex-col transition-colors duration-300">
       {/* Top Navbar */}
       <Navbar
         user={user}
         character={character}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
         onOpenCreateQuest={() => setCreateQuestOpen(true)}
         onLogout={handleLogout}
       />
+
+      {/* Subtle OSINT Cyber Stream HUD Bar (Dark theme only) */}
+      {theme === 'dark' && (
+        <div className="hidden sm:block border-b border-cyan-900/30 bg-slate-950/60 backdrop-blur-sm px-4 py-1">
+          <div className="mx-auto flex max-w-7xl items-center justify-between text-[10px] font-mono text-cyan-400/80">
+            <span className="flex items-center space-x-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-ping" />
+              <span>OSINT // NEURAL_NET_STREAM v2.1</span>
+              <span className="text-slate-500">|</span>
+              <span className="text-sky-300/80">LAT: 35.6895 // LON: 139.6917</span>
+            </span>
+            <span className="flex items-center space-x-3 text-slate-400">
+              <span className="text-cyan-300">SYS_STATUS: ACTIVE</span>
+              <span>PACKET_ANALYSIS: [98.4%]</span>
+              <span className="text-amber-400/80">HASH: SHA-256//VERIFIED</span>
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Main Container */}
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 sm:px-6 lg:px-8 py-6">

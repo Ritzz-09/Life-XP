@@ -73,10 +73,10 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess }) => {
   ];
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-[#080c14] relative overflow-hidden">
+    <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 lg:p-8 cyber-bg-overlay relative overflow-hidden">
       {/* Background ambient lighting */}
-      <div className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-amber-500/10 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-blue-500/10 blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-cyan-500/15 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-blue-600/15 blur-[120px] pointer-events-none" />
 
       <div className="w-full max-w-md relative z-10">
         {/* Realm Emblem */}
