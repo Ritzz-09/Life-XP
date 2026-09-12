@@ -102,26 +102,35 @@ export const DEFAULT_ITEMS = [
 
 export const STARTER_QUESTS = [
   {
-    title: 'Morning Awakening & Hydration',
-    description: 'Drink 500ml of clean water and stretch for 5 minutes after waking up.',
+    title: 'Deep Study Block: 60-min Focus Session',
+    description: 'Zero distractions, close social media tabs, and tackle core lecture or book material.',
     type: 'DAILY',
-    difficulty: 'EASY',
-    attribute: 'VIT',
-    xpReward: 30,
-    goldReward: 20,
-  },
-  {
-    title: 'Deep Work: 45-min Focus Block',
-    description: 'Zero distractions, close unnecessary tabs, and push through high-priority task.',
-    type: 'HABIT',
     difficulty: 'MEDIUM',
     attribute: 'INT',
     xpReward: 60,
     goldReward: 40,
   },
   {
-    title: 'Strength & Conditioning Training',
-    description: 'Complete 30 minutes of gym workout, bodyweight training, or brisk cardio.',
+    title: 'Quality Time with Friends & Loved Ones',
+    description: 'Meet up, share laughter, play games, or have meaningful conversations with close friends.',
+    type: 'DAILY',
+    difficulty: 'MEDIUM',
+    attribute: 'SPR',
+    xpReward: 60,
+    goldReward: 40,
+  },
+  {
+    title: 'Call Parents or Family Check-in',
+    description: 'Dedicate 15 minutes to call your parents or family to share love and support.',
+    type: 'HABIT',
+    difficulty: 'EASY',
+    attribute: 'SPR',
+    xpReward: 30,
+    goldReward: 20,
+  },
+  {
+    title: 'Strength & Conditioning Workout',
+    description: 'Complete 30-45 minutes of gym weight training, calisthenics, or intense cardio.',
     type: 'DAILY',
     difficulty: 'HARD',
     attribute: 'STR',
@@ -129,17 +138,26 @@ export const STARTER_QUESTS = [
     goldReward: 80,
   },
   {
-    title: 'Mindfulness & Meditation',
-    description: '10 minutes of calm breathing, stillness, or evening gratitude journaling.',
+    title: '8 Hours Restful Sleep & Wind-Down',
+    description: 'Sleep before 11:30 PM with screens away for cellular recovery and mental health.',
     type: 'DAILY',
+    difficulty: 'MEDIUM',
+    attribute: 'VIT',
+    xpReward: 60,
+    goldReward: 40,
+  },
+  {
+    title: 'Hydration & Wholesome Nutrition',
+    description: 'Drink 2+ litres of clean water and eat a nutritious home-cooked meal.',
+    type: 'HABIT',
     difficulty: 'EASY',
-    attribute: 'SPR',
+    attribute: 'VIT',
     xpReward: 30,
     goldReward: 20,
   },
   {
-    title: 'Inbox Zero & Rapid Errands',
-    description: 'Clear critical emails and organize tomorrow’s plan of attack.',
+    title: 'Declutter & Clean Living Space',
+    description: 'Organize study desk, make the bed, and remove visual clutter from your room.',
     type: 'TODO',
     difficulty: 'EASY',
     attribute: 'AGI',
@@ -148,12 +166,211 @@ export const STARTER_QUESTS = [
   },
   {
     title: 'Slay the Procrastination Titan',
-    description: 'Tackle the one dreaded project you have been putting off for days.',
+    description: 'Tackle the one dreaded high-stakes exam or project you have delayed all week.',
     type: 'BOSS',
     difficulty: 'EPIC',
     attribute: 'INT',
     xpReward: 250,
     goldReward: 180,
+  },
+];
+
+export interface LifeActivityPreset {
+  domain: string;
+  domainIcon: string;
+  items: {
+    title: string;
+    description: string;
+    type: 'DAILY' | 'HABIT' | 'TODO' | 'BOSS';
+    difficulty: 'TRIVIAL' | 'EASY' | 'MEDIUM' | 'HARD' | 'EPIC';
+    attribute: 'STR' | 'INT' | 'VIT' | 'AGI' | 'SPR';
+  }[];
+}
+
+export const HUMAN_LIFE_ACTIVITY_PRESETS: LifeActivityPreset[] = [
+  {
+    domain: 'Studying & Academic Mastery',
+    domainIcon: 'GraduationCap',
+    items: [
+      {
+        title: 'Deep Study Block: 60-min Revision',
+        description: 'Complete focused study session on high-priority topic without phone distractions.',
+        type: 'DAILY',
+        difficulty: 'MEDIUM',
+        attribute: 'INT',
+      },
+      {
+        title: 'Active Recall & Flashcard Sprint (25m)',
+        description: 'Review key terms, formulas, or language vocabulary using spaced repetition.',
+        type: 'HABIT',
+        difficulty: 'EASY',
+        attribute: 'INT',
+      },
+      {
+        title: 'Solve Challenging Problem Set',
+        description: 'Work through complex math, engineering, or algorithm challenges.',
+        type: 'DAILY',
+        difficulty: 'HARD',
+        attribute: 'INT',
+      },
+      {
+        title: 'Read 25 Pages of Non-Fiction / Book',
+        description: 'Expand your mind with insightful literature, biographies, or career guides.',
+        type: 'HABIT',
+        difficulty: 'EASY',
+        attribute: 'INT',
+      },
+      {
+        title: 'Exam or Semester Milestone Project',
+        description: 'Complete and submit a comprehensive research paper or term project.',
+        type: 'BOSS',
+        difficulty: 'EPIC',
+        attribute: 'INT',
+      },
+    ],
+  },
+  {
+    domain: 'Friends, Family & Social Bonds',
+    domainIcon: 'Users',
+    items: [
+      {
+        title: 'Quality Time with Friends & Hangout',
+        description: 'Meet up for coffee, shared meal, board games, or outdoor adventure with friends.',
+        type: 'DAILY',
+        difficulty: 'MEDIUM',
+        attribute: 'SPR',
+      },
+      {
+        title: 'Call Parents or Grandparents',
+        description: 'Spend 15-20 minutes checking in with family to share gratitude and stories.',
+        type: 'HABIT',
+        difficulty: 'EASY',
+        attribute: 'SPR',
+      },
+      {
+        title: 'Support or Deep Listening for a Friend',
+        description: 'Be fully present for a friend going through a rough patch without checking your phone.',
+        type: 'DAILY',
+        difficulty: 'MEDIUM',
+        attribute: 'SPR',
+      },
+      {
+        title: 'Group Study or Peer Collaboration',
+        description: 'Organize a cooperative problem-solving or study sprint with classmates.',
+        type: 'TODO',
+        difficulty: 'MEDIUM',
+        attribute: 'SPR',
+      },
+      {
+        title: 'Host a Celebration or Dinner Party',
+        description: 'Bring friends together for a memorable shared feast or game night.',
+        type: 'BOSS',
+        difficulty: 'HARD',
+        attribute: 'SPR',
+      },
+    ],
+  },
+  {
+    domain: 'Fitness, Health & Vitality',
+    domainIcon: 'Dumbbell',
+    items: [
+      {
+        title: 'Gym / Heavy Resistance Training',
+        description: 'Hit progressive overload with weightlifting, machines, or calisthenics.',
+        type: 'DAILY',
+        difficulty: 'HARD',
+        attribute: 'STR',
+      },
+      {
+        title: '5km Outdoor Run or Brisk Cardio',
+        description: 'Elevate heart rate, breathe fresh air, and build aerobic endurance.',
+        type: 'DAILY',
+        difficulty: 'MEDIUM',
+        attribute: 'STR',
+      },
+      {
+        title: '8 Hours of Quality Restorative Sleep',
+        description: 'Aim for consistent circadian rhythm and deep uninterrupted REM sleep.',
+        type: 'DAILY',
+        difficulty: 'MEDIUM',
+        attribute: 'VIT',
+      },
+      {
+        title: 'Hydration Goal: 2 Litres of Water',
+        description: 'Drink sufficient water throughout the morning, afternoon, and evening.',
+        type: 'HABIT',
+        difficulty: 'EASY',
+        attribute: 'VIT',
+      },
+      {
+        title: 'Cook a Healthy Nutrient-Dense Meal',
+        description: 'Prepare clean proteins, whole vegetables, and avoid ultra-processed food.',
+        type: 'HABIT',
+        difficulty: 'EASY',
+        attribute: 'VIT',
+      },
+    ],
+  },
+  {
+    domain: 'Productivity, Chores & Life Agility',
+    domainIcon: 'CheckSquare',
+    items: [
+      {
+        title: 'Deep Clean & Organize Bedroom / Desk',
+        description: 'Clear desk clutter, wipe surfaces, make bed, and take out trash.',
+        type: 'DAILY',
+        difficulty: 'EASY',
+        attribute: 'AGI',
+      },
+      {
+        title: 'Laundry & Wardrobe Reset',
+        description: 'Wash, dry, and neatly fold all clothes and fresh linens.',
+        type: 'TODO',
+        difficulty: 'EASY',
+        attribute: 'AGI',
+      },
+      {
+        title: 'Weekly Budget & Financial Check-in',
+        description: 'Log all expenses, review savings goals, and eliminate wasteful subscriptions.',
+        type: 'HABIT',
+        difficulty: 'MEDIUM',
+        attribute: 'AGI',
+      },
+      {
+        title: 'Inbox Zero & Next-Day Planning',
+        description: 'Clear critical messages, schedule calendar, and set tomorrow’s top 3 priorities.',
+        type: 'DAILY',
+        difficulty: 'EASY',
+        attribute: 'AGI',
+      },
+    ],
+  },
+  {
+    domain: 'Mindfulness, Spirit & Peace',
+    domainIcon: 'Sparkles',
+    items: [
+      {
+        title: '15-Minute Calm Meditation',
+        description: 'Sit in stillness, observe the breath, and release anxiety and mental tension.',
+        type: 'DAILY',
+        difficulty: 'EASY',
+        attribute: 'SPR',
+      },
+      {
+        title: 'Daily Gratitude Journaling',
+        description: 'Write down 3 specific things you are genuinely grateful for today.',
+        type: 'HABIT',
+        difficulty: 'TRIVIAL',
+        attribute: 'SPR',
+      },
+      {
+        title: 'Digital Sunset (No Screens 45m Before Bed)',
+        description: 'Replace screen time with light stretching or soothing audio before sleep.',
+        type: 'DAILY',
+        difficulty: 'MEDIUM',
+        attribute: 'SPR',
+      },
+    ],
   },
 ];
 

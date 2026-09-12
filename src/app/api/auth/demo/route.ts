@@ -52,7 +52,7 @@ export async function POST() {
               attribute: q.attribute,
               xpReward: q.xpReward,
               goldReward: q.goldReward,
-              isCompleted: idx === 0, // Mark first quest done to show completed state
+              isCompleted: idx === 0,
               completedAt: idx === 0 ? new Date() : null,
               streak: idx === 0 ? 3 : 0,
             })),
@@ -78,6 +78,27 @@ export async function POST() {
           where: { userId: user.id },
           data: { equippedWeaponId: sword.id },
         });
+      }
+    } else {
+      // Ensure all starter quests exist for the existing demo hero
+      for (const q of STARTER_QUESTS) {
+        const hasQuest = await prisma.quest.findFirst({
+          where: { userId: user.id, title: q.title },
+        });
+        if (!hasQuest) {
+          await prisma.quest.create({
+            data: {
+              userId: user.id,
+              title: q.title,
+              description: q.description,
+              type: q.type,
+              difficulty: q.difficulty,
+              attribute: q.attribute,
+              xpReward: q.xpReward,
+              goldReward: q.goldReward,
+            },
+          });
+        }
       }
     }
 
