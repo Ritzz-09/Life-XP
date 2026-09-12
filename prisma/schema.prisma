@@ -1,0 +1,133 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id              String               @id @default(cuid())
+  email           String               @unique
+  username        String
+  passwordHash    String
+  avatar          String               @default("warrior")
+  characterTitle  String               @default("Novice Adventurer")
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+
+  character       Character?
+  quests          Quest[]
+  completions     QuestCompletionLog[]
+  inventory       UserItem[]
+}
+
+model Character {
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  level               Int      @default(1)
+  xp                  Int      @default(0)
+  currentHp           Int      @default(100)
+  maxHp               Int      @default(100)
+  currentMana         Int      @default(50)
+  maxMana             Int      @default(50)
+  gold                Int      @default(100)
+  streak              Int      @default(1)
+  lastActiveDate      String   @default("")
+  
+  strength            Int      @default(10)
+  intellect           Int      @default(10)
+  vitality            Int      @default(10)
+  agility             Int      @default(10)
+  spirit              Int      @default(10)
+
+  equippedWeaponId    String?
+  equippedArmorId     String?
+  equippedAccessoryId String?
+  equippedBadgeId     String?
+
+  updatedAt           DateTime @updatedAt
+}
+
+model Quest {
+  id          String               @id @default(cuid())
+  userId      String
+  user        User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  title       String
+  description String               @default("")
+  type        String               @default("TODO")     // HABIT, DAILY, TODO, BOSS
+  difficulty  String               @default("MEDIUM")   // TRIVIAL, EASY, MEDIUM, HARD, EPIC
+  attribute   String               @default("STR")      // STR, INT, VIT, AGI, SPR
+  xpReward    Int                  @default(50)
+  goldReward  Int                  @default(25)
+  isCompleted Boolean              @default(false)
+  completedAt DateTime?
+  streak      Int                  @default(0)
+  dueDate     String?
+  
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  completions QuestCompletionLog[]
+}
+
+model QuestCompletionLog {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questId     String?
+  quest       Quest?   @relation(fields: [questId], references: [id], onDelete: SetNull)
+  questTitle  String
+  xpEarned    Int
+  goldEarned  Int
+  attribute   String
+  completedAt DateTime @default(now())
+  dateStr     String   // YYYY-MM-DD
+}
+
+model Item {
+  id                String     @id @default(cuid())
+  name              String     @unique
+  description       String
+  category          String     // WEAPON, ARMOR, ACCESSORY, CONSUMABLE, BADGE, THEME
+  cost              Int
+  rarity            String     @default("COMMON") // COMMON, RARE, EPIC, LEGENDARY
+  icon              String     // Icon identifier e.g. "Sword", "Shield", "Potion", "Crown"
+  statType          String?    // STR, INT, VIT, AGI, SPR, HP, XP_BOOST
+  statBonus         Int        @default(0)
+  effectDescription String     @default("")
+  createdAt         DateTime   @default(now())
+  
+  userItems         UserItem[]
+}
+
+model UserItem {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itemId     String
+  item       Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  isEquipped Boolean  @default(false)
+  quantity   Int      @default(1)
+  acquiredAt DateTime @default(now())
+
+  @@unique([userId, itemId])
+}
+
+model BossEncounter {
+  id          String   @id @default(cuid())
+  name        String
+  title       String
+  description String
+  maxHp       Int      @default(1500)
+  currentHp   Int      @default(1500)
+  avatar      String   @default("dragon")
+  weakness    String   @default("INT")
+  rewardGold  Int      @default(250)
+  rewardXp    Int      @default(500)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
