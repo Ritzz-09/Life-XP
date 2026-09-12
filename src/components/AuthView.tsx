@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { Shield, Sparkles, Sword, Flame, Lock, Mail, User, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { soundFx } from '@/lib/sound-fx';
+import { CharacterVisual } from './CharacterVisual';
+import { GamerAvatar } from './GamerAvatar';
 
 interface AuthViewProps {
   onSuccess: (data: any) => void;
@@ -14,9 +16,17 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess }) => {
   const [identifier, setIdentifier] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [avatar, setAvatar] = useState('warrior');
+  const [avatar, setAvatar] = useState('crimson-avenger');
+  const [gender, setGender] = useState<'MALE' | 'FEMALE' | 'NON_BINARY'>('MALE');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const starterAvatars = [
+    { key: 'crimson-avenger', label: 'Avenger', sub: 'Superhero' },
+    { key: 'cyber-ninja', label: 'Cyber Ninja', sub: 'Cyberpunk' },
+    { key: 'warrior', label: 'Iron Guard', sub: 'Fantasy' },
+    { key: 'pixel-hero', label: 'Pixel Knight', sub: 'Retro' },
+  ];
 
   const handleDemoLogin = async () => {
     setLoading(true);
@@ -43,7 +53,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess }) => {
       const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
       const payload = isLogin
         ? { identifier, password }
-        : { username, email, password, avatar };
+        : { username, email, password, avatar, gender };
 
       const res = await fetch(endpoint, {
         method: 'POST',
@@ -64,13 +74,6 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess }) => {
       setLoading(false);
     }
   };
-
-  const archetypes = [
-    { key: 'warrior', label: 'Warrior', bonus: '+STR Focus' },
-    { key: 'mage', label: 'Mage', bonus: '+INT Focus' },
-    { key: 'rogue', label: 'Rogue', bonus: '+AGI Focus' },
-    { key: 'paladin', label: 'Paladin', bonus: '+VIT Focus' },
-  ];
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 lg:p-8 cyber-bg-overlay relative overflow-hidden">
@@ -205,28 +208,77 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess }) => {
             </div>
 
             {!isLogin && (
-              <div>
-                <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
-                  Hero Archetype
-                </label>
-                <div className="grid grid-cols-4 gap-1.5">
-                  {archetypes.map((arch) => (
-                    <button
-                      key={arch.key}
-                      type="button"
-                      onClick={() => setAvatar(arch.key)}
-                      className={`rounded-xl border p-2 text-center transition ${
-                        avatar === arch.key
-                          ? 'border-amber-400 bg-amber-500/20 text-amber-300 ring-1 ring-amber-400'
-                          : 'border-slate-800 bg-slate-950 text-slate-400 hover:text-slate-200'
-                      }`}
-                    >
-                      <div className="text-[10px] font-bold">{arch.label}</div>
-                      <div className="text-[8px] text-slate-400">{arch.bonus}</div>
-                    </button>
-                  ))}
+              <>
+                {/* Hero Gender Selection */}
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                    Hero Identity & Visual Form
+                  </label>
+                  <div className="flex items-center space-x-3 rounded-2xl border border-slate-800 bg-slate-950 p-2.5">
+                    <CharacterVisual
+                      gender={gender}
+                      level={1}
+                      mode="portrait"
+                      className="h-14 w-14 shrink-0"
+                    />
+                    <div className="grid grid-cols-3 gap-1.5 flex-1">
+                      {[
+                        { key: 'MALE', label: 'Male' },
+                        { key: 'FEMALE', label: 'Female' },
+                        { key: 'NON_BINARY', label: 'Enby' },
+                      ].map((g) => (
+                        <button
+                          key={g.key}
+                          type="button"
+                          onClick={() => {
+                            setGender(g.key as any);
+                            soundFx.playEquip();
+                          }}
+                          className={`rounded-xl border py-2 text-center text-xs font-bold transition ${
+                            gender === g.key
+                              ? 'border-amber-400 bg-amber-500/20 text-amber-300 ring-1 ring-amber-400'
+                              : 'border-slate-800 bg-slate-900/80 text-slate-400 hover:text-slate-200'
+                          }`}
+                        >
+                          {g.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                    Starter Game Avatar (Profile Pic)
+                  </label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {starterAvatars.map((starter) => (
+                      <button
+                        key={starter.key}
+                        type="button"
+                        onClick={() => {
+                          setAvatar(starter.key);
+                          soundFx.playEquip();
+                        }}
+                        className={`flex flex-col items-center justify-between rounded-xl border p-2 text-center transition ${
+                          avatar === starter.key
+                            ? 'border-amber-400 bg-amber-500/20 text-amber-300 ring-1 ring-amber-400 shadow-md shadow-amber-500/20'
+                            : 'border-slate-800 bg-slate-950 text-slate-400 hover:text-slate-200'
+                        }`}
+                      >
+                        <GamerAvatar
+                          avatarId={starter.key}
+                          size="sm"
+                          showFrame={false}
+                          className="mb-1"
+                        />
+                        <div className="text-[10px] font-bold truncate w-full">{starter.label}</div>
+                        <div className="text-[8px] text-slate-500 truncate w-full">{starter.sub}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
             )}
 
             <button

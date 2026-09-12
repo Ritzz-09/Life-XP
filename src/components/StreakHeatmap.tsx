@@ -55,7 +55,7 @@ export const StreakHeatmap: React.FC<StreakHeatmapProps> = ({
         <div className="flex items-center space-x-2">
           <Calendar className="h-4 w-4 text-orange-400" />
           <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300">
-            Discipline Activity Matrix (28 Days)
+            28-Day Activity Log
           </h4>
         </div>
         <div className="flex items-center space-x-1 text-orange-400 text-xs font-bold">
@@ -72,7 +72,7 @@ export const StreakHeatmap: React.FC<StreakHeatmapProps> = ({
             className={`aspect-square rounded-lg border flex flex-col items-center justify-center text-[10px] font-mono transition-all hover:scale-105 cursor-pointer ${getIntensityColor(
               day.count
             )}`}
-            title={`${day.dateStr}: ${day.count} quests fulfilled`}
+            title={`${day.dateStr}: ${day.count} quests completed`}
           >
             <span className="opacity-60 text-[8px] leading-none">{day.dayLabel}</span>
             <span className="font-bold leading-tight">{day.count > 0 ? day.count : '·'}</span>

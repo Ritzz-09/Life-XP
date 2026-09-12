@@ -190,18 +190,18 @@ export const CreateQuestModal: React.FC<CreateQuestModalProps> = ({
       aria-labelledby="forge-quest-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200"
     >
-      <div className="relative w-full max-w-2xl max-h-[90vh] flex flex-col rounded-3xl border border-slate-700 bg-slate-900 shadow-2xl overflow-hidden">
+      <div className="relative w-full max-w-2xl max-h-[90vh] flex flex-col rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-800 p-5 bg-slate-950/60">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 p-5 bg-slate-50 dark:bg-slate-950/60">
           <div className="flex items-center space-x-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30">
               <Plus className="h-5 w-5" />
             </div>
             <div>
-              <h3 id="forge-quest-title" className="text-base sm:text-lg font-bold text-slate-100">
+              <h3 id="forge-quest-title" className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100">
                 Forge Real-Life Quests
               </h3>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Turn studying, social bonds, health, and daily habits into RPG power
               </p>
             </div>
@@ -209,20 +209,20 @@ export const CreateQuestModal: React.FC<CreateQuestModalProps> = ({
           <button
             onClick={onClose}
             aria-label="Close modal"
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition"
+            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 transition"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Tab Selection: Life Activity Presets vs Custom Form */}
-        <div className="flex border-b border-slate-800 bg-slate-950 px-5 pt-2">
+        <div className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-5 pt-2">
           <button
             onClick={() => setModalTab('PRESETS')}
-            className={`flex items-center space-x-2 border-b-2 px-4 py-2.5 text-xs font-bold transition ${
+            className={`flex items-center space-x-2 border-b-2 px-4 py-2.5 text-xs font-black transition ${
               modalTab === 'PRESETS'
-                ? 'border-amber-400 text-amber-300'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-amber-500 text-amber-700 dark:border-amber-400 dark:text-amber-300'
+                : 'border-transparent text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
             }`}
           >
             <Sparkles className="h-3.5 w-3.5" />
@@ -230,10 +230,10 @@ export const CreateQuestModal: React.FC<CreateQuestModalProps> = ({
           </button>
           <button
             onClick={() => setModalTab('CUSTOM')}
-            className={`flex items-center space-x-2 border-b-2 px-4 py-2.5 text-xs font-bold transition ${
+            className={`flex items-center space-x-2 border-b-2 px-4 py-2.5 text-xs font-black transition ${
               modalTab === 'CUSTOM'
-                ? 'border-amber-400 text-amber-300'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-amber-500 text-amber-700 dark:border-amber-400 dark:text-amber-300'
+                : 'border-transparent text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
             }`}
           >
             <Layers className="h-3.5 w-3.5" />
@@ -243,12 +243,12 @@ export const CreateQuestModal: React.FC<CreateQuestModalProps> = ({
 
         {/* Alerts */}
         {error && (
-          <div className="mx-5 mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-400">
+          <div className="mx-5 mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-500 font-medium">
             {error}
           </div>
         )}
         {successMsg && (
-          <div className="mx-5 mt-4 flex items-center space-x-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs text-emerald-400 animate-in fade-in">
+          <div className="mx-5 mt-4 flex items-center space-x-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs text-emerald-600 dark:text-emerald-400 font-medium animate-in fade-in">
             <CheckCircle2 className="h-4 w-4 shrink-0" />
             <span>{successMsg}</span>
           </div>
@@ -267,8 +267,8 @@ export const CreateQuestModal: React.FC<CreateQuestModalProps> = ({
                     onClick={() => setSelectedDomainIndex(idx)}
                     className={`flex items-center space-x-1.5 rounded-xl px-3 py-2 text-xs font-bold whitespace-nowrap transition ${
                       selectedDomainIndex === idx
-                        ? 'bg-amber-500/20 text-amber-300 border border-amber-400/60 shadow-sm'
-                        : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                        ? 'bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/60 shadow-sm'
+                        : 'bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-800'
                     }`}
                   >
                     {getDomainIcon(domain.domainIcon)}
@@ -284,34 +284,34 @@ export const CreateQuestModal: React.FC<CreateQuestModalProps> = ({
                   return (
                     <div
                       key={item.title}
-                      className="group flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-slate-800 bg-slate-950/70 p-4 transition hover:border-slate-700 hover:bg-slate-950"
+                      className="group flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950/70 p-4 transition hover:border-amber-500/40 dark:hover:border-slate-700 shadow-sm"
                     >
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <span className={`inline-flex items-center rounded border px-1.5 py-0.2 text-[10px] font-bold ${attrInfo.bg}`}>
+                        <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                          <span className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[10px] font-black tracking-wide ${attrInfo.bg}`}>
                             {attrInfo.name}
                           </span>
-                          <span className="rounded bg-slate-800 px-1.5 py-0.2 text-[10px] font-semibold text-slate-300 uppercase">
+                          <span className="rounded-md border border-slate-200 dark:border-transparent bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase">
                             {item.type}
                           </span>
-                          <span className="text-[10px] font-mono text-amber-400/90 font-semibold">
+                          <span className="inline-flex items-center text-[11px] font-bold font-mono text-amber-700 dark:text-amber-400">
                             +{DIFFICULTY_CONFIG[item.difficulty].xp} XP • +{DIFFICULTY_CONFIG[item.difficulty].gold} Gold
                           </span>
                         </div>
-                        <h4 className="text-sm font-bold text-slate-100">
+                        <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">
                           {item.title}
                         </h4>
-                        <p className="text-xs text-slate-400 mt-0.5">
+                        <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
                           {item.description}
                         </p>
                       </div>
 
                       {/* Action buttons */}
-                      <div className="flex items-center space-x-2 shrink-0">
+                      <div className="flex items-center space-x-2 shrink-0 pt-1 sm:pt-0">
                         <button
                           type="button"
                           onClick={() => handleCustomizePreset(item)}
-                          className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-slate-800 hover:text-slate-100 transition"
+                          className="rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 px-3.5 py-1.5 text-xs font-bold text-slate-800 dark:text-slate-200 transition"
                         >
                           Customize
                         </button>
@@ -319,7 +319,7 @@ export const CreateQuestModal: React.FC<CreateQuestModalProps> = ({
                           type="button"
                           disabled={loading}
                           onClick={() => handleQuickAdd(item)}
-                          className="flex items-center space-x-1 rounded-xl bg-amber-500 hover:bg-amber-400 px-3.5 py-1.5 text-xs font-bold text-slate-950 shadow-md shadow-amber-500/20 active:scale-95 transition"
+                          className="flex items-center space-x-1 rounded-xl bg-amber-500 hover:bg-amber-400 px-3.5 py-1.5 text-xs font-black text-slate-950 shadow-md shadow-amber-500/20 active:scale-95 transition"
                         >
                           <Plus className="h-3.5 w-3.5" />
                           <span>Quick Add</span>
@@ -335,8 +335,8 @@ export const CreateQuestModal: React.FC<CreateQuestModalProps> = ({
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Title */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300">
-                  Quest Title <span className="text-red-400">*</span>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  Quest Title <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -344,13 +344,13 @@ export const CreateQuestModal: React.FC<CreateQuestModalProps> = ({
                   placeholder="e.g. Study 45m for Exam, Dinner with Friends, Hit the Gym"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400"
+                  className="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 shadow-sm"
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                   Description / Real-World Goal (Optional)
                 </label>
                 <textarea
@@ -358,20 +358,20 @@ export const CreateQuestModal: React.FC<CreateQuestModalProps> = ({
                   placeholder="Add specific details or motivational criteria..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2 text-sm text-slate-100 placeholder-slate-500 focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400"
+                  className="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3.5 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 shadow-sm"
                 />
               </div>
 
               {/* Quest Type & Due Date */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
                     Frequency / Type
                   </label>
                   <select
                     value={type}
                     onChange={(e) => setType(e.target.value)}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 focus:border-amber-400 focus:outline-none"
+                    className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-slate-200 focus:border-amber-500 focus:outline-none shadow-sm"
                   >
                     <option value="DAILY">Daily (Repeats Every Day)</option>
                     <option value="HABIT">Habit (Ongoing Discipline)</option>
@@ -381,21 +381,22 @@ export const CreateQuestModal: React.FC<CreateQuestModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
                     Due Date
                   </label>
                   <input
                     type="date"
                     value={dueDate}
                     onChange={(e) => setDueDate(e.target.value)}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 focus:border-amber-400 focus:outline-none"
-                  />
+                    className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-900 dark:text-slate-200 focus:border-amber-500 focus:outline-none shadow-sm"
+                  >
+                  </input>
                 </div>
               </div>
 
               {/* Attribute Selection */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                   Character Attribute
                 </label>
                 <div className="grid grid-cols-5 gap-1.5">
@@ -406,8 +407,8 @@ export const CreateQuestModal: React.FC<CreateQuestModalProps> = ({
                       onClick={() => setAttribute(attr.key)}
                       className={`flex flex-col items-center justify-center rounded-xl border p-2 text-center transition-all ${
                         attribute === attr.key
-                          ? 'border-amber-400 bg-amber-500/20 text-amber-300 ring-1 ring-amber-400'
-                          : 'border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                          ? 'border-amber-500 bg-amber-500/15 text-amber-800 dark:text-amber-300 ring-1 ring-amber-500 font-bold'
+                          : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:text-slate-900 dark:hover:text-slate-200'
                       }`}
                       title={attr.eg}
                     >
@@ -416,14 +417,14 @@ export const CreateQuestModal: React.FC<CreateQuestModalProps> = ({
                     </button>
                   ))}
                 </div>
-                <p className="mt-1 text-[11px] text-slate-400">
+                <p className="mt-1.5 text-[11px] text-slate-600 dark:text-slate-400">
                   {ATTRIBUTE_METADATA[attribute].description}
                 </p>
               </div>
 
               {/* Difficulty Selection */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                   Difficulty & Rewards
                 </label>
                 <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5">
@@ -434,24 +435,24 @@ export const CreateQuestModal: React.FC<CreateQuestModalProps> = ({
                       onClick={() => setDifficulty(diff.key)}
                       className={`flex flex-col items-center justify-center rounded-xl border p-2 text-center transition-all ${
                         difficulty === diff.key
-                          ? 'border-amber-400 bg-amber-500/20 text-amber-300 ring-1 ring-amber-400'
-                          : 'border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                          ? 'border-amber-500 bg-amber-500/15 text-amber-800 dark:text-amber-300 ring-1 ring-amber-500 font-bold'
+                          : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:text-slate-900 dark:hover:text-slate-200'
                       }`}
                     >
                       <span className="text-[11px] font-bold">{diff.label}</span>
-                      <span className="text-[9px] text-amber-400 font-mono">+{diff.xp} XP</span>
-                      <span className="text-[9px] text-yellow-300 font-mono">+{diff.gold} G</span>
+                      <span className="text-[9px] text-amber-700 dark:text-amber-400 font-mono font-bold">+{diff.xp} XP</span>
+                      <span className="text-[9px] text-amber-600 dark:text-yellow-300 font-mono font-bold">+{diff.gold} G</span>
                     </button>
                   ))}
                 </div>
               </div>
 
               {/* Submit */}
-              <div className="mt-6 flex justify-end space-x-3 border-t border-slate-800 pt-4">
+              <div className="mt-6 flex justify-end space-x-3 border-t border-slate-200 dark:border-slate-800 pt-4">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="rounded-xl border border-slate-700 px-4 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-800 transition"
+                  className="rounded-xl border border-slate-300 dark:border-slate-700 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
                 >
                   Cancel
                 </button>

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Skull, Flame, ShieldAlert, Swords, Heart, Sparkles, Brain } from 'lucide-react';
 import { ATTRIBUTE_METADATA, AttributeType } from '@/lib/rpg-engine';
+import { GamerAvatar } from './GamerAvatar';
 
 interface BossEncounter {
   id: string;
@@ -14,6 +15,7 @@ interface BossEncounter {
   weakness: string;
   rewardGold: number;
   rewardXp: number;
+  tier?: number;
 }
 
 interface StrikeLog {
@@ -24,6 +26,7 @@ interface StrikeLog {
   completedAt: string;
   user?: {
     username: string;
+    avatar?: string;
   };
 }
 
@@ -68,38 +71,34 @@ export const BossCard: React.FC = () => {
   const weaknessMeta = ATTRIBUTE_METADATA[weaknessKey];
 
   return (
-    <div className="rounded-2xl border border-rose-900/40 bg-gradient-to-b from-slate-900 via-rose-950/20 to-slate-900 p-5 shadow-xl backdrop-blur-sm relative overflow-hidden">
+    <div className="rounded-2xl border border-rose-900/40 bg-gradient-to-b from-slate-900 via-rose-950/25 to-slate-900 p-5 shadow-xl backdrop-blur-sm relative overflow-hidden ambient-glow-rose interactive-card">
       {/* Background ambient red glow */}
-      <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-rose-600/10 blur-2xl pointer-events-none" />
+      <div className="absolute -top-10 -right-10 h-36 w-36 rounded-full bg-rose-600/15 blur-3xl pointer-events-none" />
 
       {/* Header */}
-      <div className="flex items-start justify-between border-b border-rose-900/40 pb-3">
-        <div>
-          <div className="flex items-center space-x-1.5">
-            <span className="flex items-center text-[10px] font-black uppercase tracking-widest text-rose-400 bg-rose-500/10 border border-rose-500/30 px-2 py-0.5 rounded-full">
-              <Skull className="h-3 w-3 mr-1" /> WORLD RAID BOSS
-            </span>
+      <div className="border-b border-rose-900/40 pb-3 space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="inline-flex items-center text-[10px] font-black uppercase tracking-wider text-rose-300 bg-rose-950/80 border border-rose-600/40 px-2.5 py-0.5 rounded-full shadow-sm">
+            <Skull className="h-3 w-3 mr-1 text-rose-400" /> Raid Boss • Tier {boss.tier || 1}
+          </span>
+
+          {/* Weakness Indicator */}
+          <div
+            className={`flex items-center rounded-lg border px-2 py-0.5 text-[11px] font-bold ${weaknessMeta.bg} shadow-sm`}
+            title={`Complete ${weaknessMeta.name} quests to deal 1.5x damage!`}
+          >
+            <Brain className="mr-1 h-3 w-3" />
+            <span>Weakness: {weaknessMeta.name}</span>
           </div>
-          <h3 className="mt-1 text-base font-extrabold text-slate-100 sm:text-lg">
-            {boss.name}
-          </h3>
-          <p className="text-xs text-rose-300/80 italic font-serif">
-            "{boss.title}"
-          </p>
         </div>
 
-        {/* Weakness Chip */}
-        <div className="flex flex-col items-end">
-          <span className="text-[10px] uppercase font-bold text-slate-400">
-            Critical Weakness
-          </span>
-          <div
-            className={`mt-0.5 flex items-center rounded-lg border px-2 py-0.5 text-xs font-bold ${weaknessMeta.bg}`}
-            title={`Complete ${weaknessMeta.name} tasks to deal 1.5x damage!`}
-          >
-            <Brain className="mr-1 h-3.5 w-3.5" />
-            <span>{weaknessMeta.full}</span>
-          </div>
+        <div>
+          <h3 className="text-base font-extrabold text-slate-100 sm:text-lg tracking-tight">
+            {boss.name}
+          </h3>
+          <p className="text-xs text-rose-300/80 italic font-medium">
+            "{boss.title}"
+          </p>
         </div>
       </div>
 
@@ -148,10 +147,13 @@ export const BossCard: React.FC = () => {
                 key={s.id}
                 className="flex items-center justify-between text-[11px] rounded bg-slate-950/40 px-2 py-1 text-slate-400 border border-slate-800/40"
               >
-                <span className="truncate max-w-[170px] text-slate-300">
-                  <span className="text-amber-400 font-semibold">{s.user?.username || 'Hero'}</span> completed "{s.questTitle}"
-                </span>
-                <span className="font-mono text-[10px] text-rose-400 font-semibold">
+                <div className="flex items-center space-x-1.5 truncate max-w-[180px]">
+                  <GamerAvatar avatarId={s.user?.avatar} size="xs" showFrame={false} />
+                  <span className="truncate text-slate-300">
+                    <span className="text-amber-700 dark:text-amber-400 font-semibold">{s.user?.username || 'Hero'}</span> completed &ldquo;{s.questTitle}&rdquo;
+                  </span>
+                </div>
+                <span className="font-mono text-[10px] text-rose-400 font-semibold shrink-0 ml-1">
                   Hit for DMG!
                 </span>
               </div>

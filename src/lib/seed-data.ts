@@ -384,5 +384,87 @@ export const DEFAULT_BOSS = {
   weakness: 'INT',
   rewardGold: 350,
   rewardXp: 500,
+  tier: 1,
+  bossIndex: 0,
   isActive: true,
 };
+
+export const BOSS_ROTATION = [
+  {
+    name: 'Chronos the Procrastinator',
+    title: 'Ancient Devourer of Hours',
+    description: 'A colossal shadow drake that feeds on delayed ambitions and forgotten to-dos. Intellect tasks strike with 1.5x Critical Damage!',
+    maxHp: 1500,
+    avatar: 'dragon',
+    weakness: 'INT',
+    rewardGold: 300,
+    rewardXp: 450,
+  },
+  {
+    name: 'Ignis the Burnout Demon',
+    title: 'Furnace of Exhaustion',
+    description: 'A blazing infernal fiend fueled by chronic stress, skipped meals, and sleepless nights. Vitality quests deal 1.5x Critical Damage!',
+    maxHp: 2200,
+    avatar: 'demon',
+    weakness: 'VIT',
+    rewardGold: 450,
+    rewardXp: 650,
+  },
+  {
+    name: 'Phantasm of Doomscrolling',
+    title: 'The Endless Feed Specter',
+    description: 'An ethereal phantom trapping minds in perpetual low-value dopamine loops. Spirit & Mindfulness quests shatter its illusions!',
+    maxHp: 3000,
+    avatar: 'specter',
+    weakness: 'SPR',
+    rewardGold: 600,
+    rewardXp: 900,
+  },
+  {
+    name: 'Gryphon of Sedentary Sloth',
+    title: 'Colossus of Immobility',
+    description: 'A stone-skinned titan weighing down your momentum. Heavy physical Strength training cracks its granite hide!',
+    maxHp: 4000,
+    avatar: 'chimera',
+    weakness: 'STR',
+    rewardGold: 800,
+    rewardXp: 1200,
+  },
+  {
+    name: 'Sovereign of Disarray & Chaos',
+    title: 'Queen of Clutter',
+    description: 'A whirlwind siren who turns workspaces into disorderly vortexes. Swift Agility and life chores banish her tempest!',
+    maxHp: 5200,
+    avatar: 'siren',
+    weakness: 'AGI',
+    rewardGold: 1000,
+    rewardXp: 1500,
+  },
+];
+
+export const DEFAULT_CUSTOM_REWARDS = [
+  {
+    title: '1 Hour Guilt-Free Gaming',
+    description: 'Dive into your favorite video game completely free of guilt and distraction.',
+    cost: 60,
+    icon: 'Gamepad2',
+  },
+  {
+    title: 'Barista Specialty Coffee or Boba',
+    description: 'Treat yourself to a delicious handcrafted beverage at your favorite café.',
+    cost: 40,
+    icon: 'Coffee',
+  },
+  {
+    title: 'Epic Movie Night + Favorite Snacks',
+    description: 'Pick an awesome film, turn down the lights, and enjoy your favorite treats.',
+    cost: 100,
+    icon: 'Film',
+  },
+  {
+    title: 'Buy a Book or Wishlist Item (<$20)',
+    description: 'Invest in personal growth, a paperback, or a wishlist gadget as a reward for discipline.',
+    cost: 250,
+    icon: 'Gift',
+  },
+];

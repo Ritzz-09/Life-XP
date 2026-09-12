@@ -9,7 +9,7 @@ export async function POST(req: Request) {
     await ensureSeedData();
 
     const body = await req.json();
-    const { username, email, password, avatar = 'warrior' } = body;
+    const { username, email, password, avatar = 'warrior', gender = 'MALE' } = body;
 
     if (!username || !email || !password) {
       return NextResponse.json({ error: 'Username, email, and password are required' }, { status: 400 });
@@ -29,8 +29,9 @@ export async function POST(req: Request) {
 
     const passwordHash = await hashPassword(password);
     const today = new Date().toISOString().split('T')[0];
+    const { DEFAULT_CUSTOM_REWARDS } = await import('@/lib/seed-data');
 
-    // Create user along with character and starter quests
+    // Create user along with character, starter quests, and custom rewards
     const user = await prisma.user.create({
       data: {
         username,
@@ -42,6 +43,7 @@ export async function POST(req: Request) {
           create: {
             level: 1,
             xp: 0,
+            gender: ['MALE', 'FEMALE', 'NON_BINARY'].includes(gender) ? gender : 'MALE',
             currentHp: 100,
             maxHp: 100,
             currentMana: 50,
@@ -55,6 +57,14 @@ export async function POST(req: Request) {
             agility: 10,
             spirit: 10,
           },
+        },
+        customRewards: {
+          create: DEFAULT_CUSTOM_REWARDS.map((r) => ({
+            title: r.title,
+            description: r.description,
+            cost: r.cost,
+            icon: r.icon,
+          })),
         },
         quests: {
           create: STARTER_QUESTS.map((q) => ({

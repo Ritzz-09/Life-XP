@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Shield,
   Heart,
@@ -11,8 +11,13 @@ import {
   Sword,
   Award,
   ChevronRight,
+  Box,
+  UserCog,
 } from 'lucide-react';
 import { getXpRequiredForNextLevel, ATTRIBUTE_METADATA } from '@/lib/rpg-engine';
+import { CharacterVisual, getEvolutionStage } from './CharacterVisual';
+import { Superhero3D } from './Superhero3D';
+import { GamerAvatar } from './GamerAvatar';
 
 interface HeroCardProps {
   user: {
@@ -23,6 +28,7 @@ interface HeroCardProps {
   character: {
     level: number;
     xp: number;
+    gender?: string;
     currentHp: number;
     maxHp: number;
     currentMana: number;
@@ -32,22 +38,32 @@ interface HeroCardProps {
     vitality: number;
     agility: number;
     spirit: number;
+    bossKills?: number;
+    streak?: number;
     equippedWeapon?: { name: string; rarity: string; statBonus: number; statType: string } | null;
     equippedArmor?: { name: string; rarity: string; statBonus: number; statType: string } | null;
     equippedBadge?: { name: string; rarity: string; statBonus: number; statType: string } | null;
   };
   onOpenShop?: () => void;
+  onOpenInspect?: () => void;
+  onOpenAvatarVault?: () => void;
+  onOpenEditProfile?: () => void;
 }
 
 export const HeroCard: React.FC<HeroCardProps> = ({
   user,
   character,
   onOpenShop,
+  onOpenInspect,
+  onOpenAvatarVault,
+  onOpenEditProfile,
 }) => {
+  const [show3DHero, setShow3DHero] = useState(true);
   const nextLevelXp = getXpRequiredForNextLevel(character.level);
   const xpPercent = Math.min(100, Math.max(0, Math.round((character.xp / nextLevelXp) * 100)));
   const hpPercent = Math.min(100, Math.max(0, Math.round((character.currentHp / character.maxHp) * 100)));
   const manaPercent = Math.min(100, Math.max(0, Math.round((character.currentMana / character.maxMana) * 100)));
+  const stageInfo = getEvolutionStage(character.level);
 
   const attributes = [
     { key: 'STR', label: 'Strength', val: character.strength, icon: Dumbbell, color: 'text-red-400', bg: 'bg-red-500' },
@@ -60,36 +76,126 @@ export const HeroCard: React.FC<HeroCardProps> = ({
   const maxStatVal = Math.max(25, ...attributes.map((a) => a.val));
 
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-xl backdrop-blur-sm">
+    <div className="rounded-2xl border border-slate-800/90 bg-slate-900/75 p-5 shadow-xl backdrop-blur-sm ambient-glow-cyan">
       {/* Hero Header */}
-      <div className="flex items-center space-x-4 border-b border-slate-800 pb-4">
-        {/* Avatar with level badge */}
-        <div className="relative">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-slate-900 via-slate-800 to-amber-950/80 border-2 border-amber-500/40 shadow-lg shadow-amber-500/10">
-            <span className="text-2xl font-black text-amber-300">
-              {user.username.slice(0, 2).toUpperCase()}
-            </span>
+      <div className="border-b border-slate-800 pb-4">
+        <div className="flex items-center space-x-3.5">
+          {/* Dynamic Gamer Avatar Profile Picture with level badge */}
+          <div
+            onClick={onOpenAvatarVault || onOpenInspect}
+            className="relative cursor-pointer transition hover:scale-105 active:scale-95 group shrink-0"
+            title="Gamer Avatar Vault — Click to Customize"
+          >
+            <GamerAvatar
+              avatarId={user.avatar}
+              size="lg"
+              level={character.level}
+              showFrame={true}
+              showLevelBadge={true}
+              showOnlineDot={true}
+            />
           </div>
-          <span className="absolute -bottom-2 -right-1 flex items-center justify-center rounded-md border border-amber-500/50 bg-amber-500 px-1.5 py-0.5 text-[10px] font-black text-slate-950 shadow">
-            LVL {character.level}
-          </span>
+
+          {/* Hero Identity & Meta */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center space-x-2">
+              <h2 className="truncate text-base font-bold text-slate-100 sm:text-lg tracking-tight">
+                {user.username}
+              </h2>
+              <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-bold text-cyan-300">
+                {character.gender === 'FEMALE' ? '♀ Hero' : character.gender === 'NON_BINARY' ? '⚥ Enby' : '♂ Titan'}
+              </span>
+            </div>
+            
+            <p className="text-xs text-amber-400 font-medium truncate mt-0.5">
+              {user.characterTitle || 'Realm Adventurer'}
+            </p>
+
+            <div className="mt-1 flex items-center space-x-1.5 text-[11px] text-slate-400">
+              <span className="font-semibold" style={{ color: stageInfo.color }}>
+                Stage {stageInfo.stage}: {stageInfo.title}
+              </span>
+              <span className="text-slate-600">•</span>
+              <span className="text-emerald-400 font-medium">Ready</span>
+            </div>
+          </div>
         </div>
 
-        {/* Hero Identity */}
-        <div className="flex-1 min-w-0">
-          <h2 className="truncate text-base font-bold text-slate-100 sm:text-lg">
-            {user.username}
-          </h2>
-          <p className="text-xs text-amber-400 font-medium">
-            {user.characterTitle || 'Realm Adventurer'}
-          </p>
-          <div className="mt-1 flex items-center space-x-2 text-[11px] text-slate-400">
-            <span>Tier: {character.level >= 5 ? 'Veteran' : 'Apprentice'}</span>
-            <span>•</span>
-            <span className="text-emerald-400">Battle Ready</span>
-          </div>
+        {/* Hero Actions Segmented Bar */}
+        <div className="mt-3.5 flex items-center gap-1.5 rounded-xl bg-slate-950/70 border border-slate-800/80 p-1">
+          {onOpenEditProfile && (
+            <button
+              onClick={onOpenEditProfile}
+              className="flex-1 flex items-center justify-center space-x-1.5 rounded-lg py-1 px-2 text-[11px] font-semibold text-cyan-300 hover:text-white hover:bg-cyan-500/20 border border-transparent hover:border-cyan-500/30 transition active:scale-95"
+              title="Edit Profile, Title & 3D Hero Archetype"
+            >
+              <UserCog className="h-3 w-3" />
+              <span>Edit Profile</span>
+            </button>
+          )}
+
+          <button
+            onClick={() => setShow3DHero(!show3DHero)}
+            className={`flex-1 flex items-center justify-center space-x-1.5 rounded-lg py-1 px-2 text-[11px] font-semibold transition active:scale-95 ${
+              show3DHero
+                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-sm'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+            }`}
+          >
+            <Box className="h-3 w-3" />
+            <span>{show3DHero ? 'Hide 3D' : '3D Hero'}</span>
+          </button>
+
+          {onOpenAvatarVault && (
+            <button
+              onClick={onOpenAvatarVault}
+              className="flex items-center justify-center space-x-1 rounded-lg py-1 px-2.5 text-[11px] font-semibold text-amber-300/90 hover:text-amber-200 hover:bg-amber-500/10 transition active:scale-95"
+              title="Choose Avatar Profile Pic"
+            >
+              <Award className="h-3 w-3" />
+              <span>Avatars</span>
+            </button>
+          )}
+
+          {onOpenInspect && (
+            <button
+              onClick={onOpenInspect}
+              className="flex items-center justify-center rounded-lg py-1 px-2.5 text-[11px] font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900 transition active:scale-95"
+              title="Inspect Full Hero Stats & Attributes"
+            >
+              Inspect
+            </button>
+          )}
         </div>
       </div>
+
+      {/* Embedded 3D Superhero Viewport */}
+      {show3DHero && (
+        <div className="mt-4 rounded-3xl border border-cyan-500/30 bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 p-2 shadow-2xl overflow-hidden relative animate-fade-in">
+          <div className="h-72 sm:h-80 w-full">
+            <Superhero3D
+              gender={character.gender}
+              level={character.level}
+              height="100%"
+              width="100%"
+              interactive={true}
+              autoRotate={true}
+              showControls={true}
+              onGenderChange={async (newGender) => {
+                try {
+                  await fetch('/api/character/gender', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ gender: newGender }),
+                  });
+                } catch (err) {
+                  console.error('Failed to persist gender', err);
+                }
+              }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Vitals: HP, Mana, XP */}
       <div className="mt-4 space-y-3">
@@ -146,7 +252,7 @@ export const HeroCard: React.FC<HeroCardProps> = ({
             />
           </div>
           <p className="mt-1 text-right text-[10px] text-slate-500">
-            Non-linear curve: ⌊100 × L^1.5⌋
+            Next Level: {nextLevelXp - character.xp} XP remaining
           </p>
         </div>
       </div>

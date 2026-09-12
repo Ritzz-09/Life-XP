@@ -11,6 +11,16 @@ import { BossCard } from '@/components/BossCard';
 import { StreakHeatmap } from '@/components/StreakHeatmap';
 import { MobileNav } from '@/components/MobileNav';
 import { AuthView } from '@/components/AuthView';
+import { CharacterInspectModal } from '@/components/CharacterInspectModal';
+import { LootChestModal } from '@/components/LootChestModal';
+import { DawnReportModal } from '@/components/DawnReportModal';
+import { AvatarStackSelectorModal } from '@/components/AvatarStackSelectorModal';
+import { EditProfileModal } from '@/components/EditProfileModal';
+import { FocusTimerModal } from '@/components/FocusTimerModal';
+import { SkillTreeModal } from '@/components/SkillTreeModal';
+import { AchievementsModal } from '@/components/AchievementsModal';
+import { PartyHub } from '@/components/PartyHub';
+import { LifeRadarChart } from '@/components/LifeRadarChart';
 import {
   Swords,
   Plus,
@@ -41,9 +51,10 @@ export default function Home() {
   // Initialize theme on client
   useEffect(() => {
     const saved = localStorage.getItem('liferpg_theme') as 'dark' | 'light' | null;
-    const initialTheme = saved || 'dark';
-    setTheme(initialTheme);
-    document.documentElement.setAttribute('data-theme', initialTheme);
+    if (saved) {
+      setTheme(saved);
+      document.documentElement.setAttribute('data-theme', saved);
+    }
   }, []);
 
   const handleToggleTheme = () => {
@@ -59,6 +70,76 @@ export default function Home() {
     isOpen: false,
     level: 1,
   });
+  const [inspectModalOpen, setInspectModalOpen] = useState(false);
+  const [avatarVaultOpen, setAvatarVaultOpen] = useState(false);
+  const [editProfileOpen, setEditProfileOpen] = useState(false);
+  const [dawnReport, setDawnReport] = useState<{
+    isOpen: boolean;
+    missedCount: number;
+    damageTaken: number;
+    currentHp: number;
+    maxHp: number;
+  }>({
+    isOpen: false,
+    missedCount: 0,
+    damageTaken: 0,
+    currentHp: 100,
+    maxHp: 100,
+  });
+  const [lootChestModal, setLootChestModal] = useState<{
+    isOpen: boolean;
+    defeatedBossName: string;
+    nextBossName: string;
+    lootChest: any;
+  }>({
+    isOpen: false,
+    defeatedBossName: '',
+    nextBossName: '',
+    lootChest: null,
+  });
+
+  // New Mega Feature Modals
+  const [focusModal, setFocusModal] = useState<{ isOpen: boolean; quest: QuestItem | null }>({
+    isOpen: false,
+    quest: null,
+  });
+  const [skillTreeOpen, setSkillTreeOpen] = useState(false);
+  const [achievementsOpen, setAchievementsOpen] = useState(false);
+  const [partyHubOpen, setPartyHubOpen] = useState(false);
+  const [readyAchievementsCount, setReadyAchievementsCount] = useState(0);
+
+  const fetchAchievementsBadge = useCallback(async () => {
+    try {
+      const res = await fetch('/api/achievements');
+      if (res.ok) {
+        const data = await res.json();
+        setReadyAchievementsCount(data.readyToClaimCount || 0);
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const checkDailyReset = useCallback(async () => {
+    try {
+      const res = await fetch('/api/quests/daily-reset', { method: 'POST' });
+      const data = await res.json();
+      if (res.ok && data.hasReport) {
+        if (data.damageTaken > 0) {
+          soundFx.playHurt();
+        }
+        setDawnReport({
+          isOpen: true,
+          missedCount: data.missedCount,
+          damageTaken: data.damageTaken,
+          currentHp: data.currentHp,
+          maxHp: data.maxHp,
+        });
+      }
+    } catch (err) {
+      console.error('Error during daily reset check:', err);
+    }
+  }, []);
 
   const fetchSessionAndData = useCallback(async () => {
     try {
@@ -75,6 +156,10 @@ export default function Home() {
         if (questsRes.ok) {
           setQuests(questsData.quests || []);
         }
+
+        // Trigger daily reset & achievements check
+        checkDailyReset();
+        fetchAchievementsBadge();
       } else {
         setUser(null);
         setCharacter(null);
@@ -82,10 +167,11 @@ export default function Home() {
     } catch (err) {
       console.error(err);
       setUser(null);
+      setCharacter(null);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [checkDailyReset]);
 
   useEffect(() => {
     fetchSessionAndData();
@@ -138,6 +224,16 @@ export default function Home() {
             level: data.progression.newLevel,
           });
         }
+        // Check for boss defeat / loot chest!
+        if (data.boss?.bossSlain && data.boss.lootChest) {
+          soundFx.playBossVictory();
+          setLootChestModal({
+            isOpen: true,
+            defeatedBossName: data.boss.defeatedBossName || 'Raid Boss',
+            nextBossName: data.boss.nextBossName || '',
+            lootChest: data.boss.lootChest,
+          });
+        }
         // Refresh logs
         fetchSessionAndData();
         return {
@@ -151,6 +247,37 @@ export default function Home() {
     } catch (err) {
       console.error(err);
       return {};
+    }
+  };
+
+  const handleCompleteQuestWithFocus = async (questId: string, focusMinutes: number) => {
+    try {
+      const res = await fetch(`/api/quests/${questId}/complete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hyperfocus: true, focusMinutes }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        soundFx.playQuestComplete();
+        soundFx.playCoin();
+        fetchSessionAndData();
+        fetchAchievementsBadge();
+        if (data.progression?.leveledUp) {
+          setLevelUpModal({ isOpen: true, level: data.progression.newLevel });
+        }
+        if (data.boss?.bossSlain && data.boss.lootChest) {
+          soundFx.playBossVictory();
+          setLootChestModal({
+            isOpen: true,
+            defeatedBossName: data.boss.defeatedBossName || 'Raid Boss',
+            nextBossName: data.boss.nextBossName || '',
+            lootChest: data.boss.lootChest,
+          });
+        }
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -217,27 +344,17 @@ export default function Home() {
         theme={theme}
         onToggleTheme={handleToggleTheme}
         onOpenCreateQuest={() => setCreateQuestOpen(true)}
+        onOpenInspect={() => setInspectModalOpen(true)}
+        onOpenAvatarVault={() => setAvatarVaultOpen(true)}
+        onOpenEditProfile={() => setEditProfileOpen(true)}
+        onOpenSkills={() => setSkillTreeOpen(true)}
+        onOpenAchievements={() => setAchievementsOpen(true)}
+        onOpenParty={() => setPartyHubOpen(true)}
+        onOpenFocusTimer={() => setFocusModal({ isOpen: true, quest: null })}
+        skillPoints={character.skillPoints || 0}
+        readyAchievementsCount={readyAchievementsCount}
         onLogout={handleLogout}
       />
-
-      {/* Subtle OSINT Cyber Stream HUD Bar (Dark theme only) */}
-      {theme === 'dark' && (
-        <div className="hidden sm:block border-b border-cyan-900/30 bg-slate-950/60 backdrop-blur-sm px-4 py-1">
-          <div className="mx-auto flex max-w-7xl items-center justify-between text-[10px] font-mono text-cyan-400/80">
-            <span className="flex items-center space-x-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-ping" />
-              <span>OSINT // NEURAL_NET_STREAM v2.1</span>
-              <span className="text-slate-500">|</span>
-              <span className="text-sky-300/80">LAT: 35.6895 // LON: 139.6917</span>
-            </span>
-            <span className="flex items-center space-x-3 text-slate-400">
-              <span className="text-cyan-300">SYS_STATUS: ACTIVE</span>
-              <span>PACKET_ANALYSIS: [98.4%]</span>
-              <span className="text-amber-400/80">HASH: SHA-256//VERIFIED</span>
-            </span>
-          </div>
-        </div>
-      )}
 
       {/* Main Container */}
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 sm:px-6 lg:px-8 py-6">
@@ -249,6 +366,9 @@ export default function Home() {
               user={user}
               character={character}
               onOpenShop={() => setDesktopView(desktopView === 'SHOP' ? 'BOARD' : 'SHOP')}
+              onOpenInspect={() => setInspectModalOpen(true)}
+              onOpenAvatarVault={() => setAvatarVaultOpen(true)}
+              onOpenEditProfile={() => setEditProfileOpen(true)}
             />
             <StreakHeatmap
               currentStreak={character.streak}
@@ -296,24 +416,42 @@ export default function Home() {
 
             {desktopView === 'BOARD' ? (
               <>
-                {/* Search & Filter Bar */}
-                <div className="space-y-3">
-                  {/* Search input */}
-                  <div className="relative">
-                    <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-500" />
-                    <input
-                      type="text"
-                      placeholder="Search active quests..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full rounded-xl border border-slate-800 bg-slate-900/60 pl-10 pr-4 py-2 text-xs text-slate-100 placeholder-slate-500 focus:border-amber-400 focus:outline-none"
-                    />
+                {/* Search & Filter Toolbar */}
+                <div className="rounded-2xl border border-slate-800/90 bg-slate-900/60 p-3 shadow-lg backdrop-blur-sm space-y-3">
+                  {/* Search input + Active count indicator */}
+                  <div className="flex items-center gap-2">
+                    <div className="relative flex-1">
+                      <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-500" />
+                      <input
+                        type="text"
+                        placeholder="Search active quests..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full rounded-xl border border-slate-800 bg-slate-950/70 pl-10 pr-4 py-2 text-xs text-slate-100 placeholder-slate-500 focus:border-amber-400/80 focus:ring-1 focus:ring-amber-400/30 focus:outline-none transition"
+                      />
+                      {searchQuery && (
+                        <button
+                          onClick={() => setSearchQuery('')}
+                          className="absolute right-3 top-2.5 text-xs text-slate-500 hover:text-slate-300"
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => setCreateQuestOpen(true)}
+                      className="game-btn flex items-center space-x-1.5 rounded-xl bg-amber-500 px-3.5 py-2 text-xs font-bold text-slate-950 shadow-md shadow-amber-500/20 hover:brightness-110 active:scale-95 transition shrink-0"
+                      title="Create Quest (Shortcut: N)"
+                    >
+                      <Plus className="h-4 w-4 stroke-[2.5]" />
+                      <span className="hidden sm:inline">New Quest</span>
+                    </button>
                   </div>
 
-                  {/* Quest Type Filter Tabs */}
-                  <div className="flex items-center space-x-1 overflow-x-auto pb-1">
+                  {/* Row 1: Quest Category Tabs */}
+                  <div className="flex items-center space-x-1 overflow-x-auto pb-1 no-scrollbar pt-1 border-t border-slate-800/60">
                     {[
-                      { key: 'ALL', label: 'All' },
+                      { key: 'ALL', label: 'All Quests' },
                       { key: 'DAILY', label: 'Dailies' },
                       { key: 'HABIT', label: 'Habits' },
                       { key: 'TODO', label: 'To-Dos' },
@@ -322,10 +460,10 @@ export default function Home() {
                       <button
                         key={tab.key}
                         onClick={() => setQuestTypeFilter(tab.key)}
-                        className={`rounded-lg px-2.5 py-1 text-xs font-semibold whitespace-nowrap transition ${
+                        className={`rounded-lg px-3 py-1.5 text-xs font-bold whitespace-nowrap transition active:scale-95 ${
                           questTypeFilter === tab.key
-                            ? 'bg-amber-500/20 text-amber-300 border border-amber-400/60'
-                            : 'text-slate-400 hover:text-slate-200'
+                            ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                            : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
                         }`}
                       >
                         {tab.label}
@@ -333,29 +471,36 @@ export default function Home() {
                     ))}
                   </div>
 
-                  {/* Attribute Filter Chips */}
-                  <div className="flex items-center space-x-1.5 overflow-x-auto">
-                    <span className="text-[10px] uppercase font-bold text-slate-500">
+                  {/* Row 2: RPG Attribute Filter Chips */}
+                  <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 no-scrollbar pt-1 border-t border-slate-800/40">
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-slate-500 mr-1 shrink-0">
                       Attribute:
                     </span>
-                    {['ALL', 'STR', 'INT', 'VIT', 'AGI', 'SPR'].map((attr) => (
+                    {[
+                      { key: 'ALL', label: 'All Stats' },
+                      { key: 'STR', label: 'STR' },
+                      { key: 'INT', label: 'INT' },
+                      { key: 'VIT', label: 'VIT' },
+                      { key: 'AGI', label: 'AGI' },
+                      { key: 'SPR', label: 'SPR' },
+                    ].map((attr) => (
                       <button
-                        key={attr}
-                        onClick={() => setAttributeFilter(attr)}
-                        className={`rounded-md px-2 py-0.5 text-[10px] font-bold transition ${
-                          attributeFilter === attr
-                            ? 'bg-slate-100 text-slate-950 shadow'
-                            : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
+                        key={attr.key}
+                        onClick={() => setAttributeFilter(attr.key)}
+                        className={`rounded-lg px-2.5 py-1 text-[11px] font-bold transition active:scale-95 shrink-0 ${
+                          attributeFilter === attr.key
+                            ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/50 shadow-sm'
+                            : 'bg-slate-950/60 text-slate-400 hover:text-slate-200 border border-slate-800/80 hover:border-slate-700'
                         }`}
                       >
-                        {attr}
+                        {attr.label}
                       </button>
                     ))}
                   </div>
                 </div>
 
                 {/* Quests List */}
-                <div className="space-y-3 pt-2">
+                <div className="space-y-3 pt-1">
                   {filteredQuests.length === 0 ? (
                     <div className="rounded-2xl border border-dashed border-slate-800 py-16 text-center">
                       <Swords className="mx-auto h-8 w-8 text-slate-600 mb-2" />
@@ -380,6 +525,7 @@ export default function Home() {
                         quest={quest}
                         onComplete={handleQuestComplete}
                         onDelete={handleQuestDelete}
+                        onStartFocus={(q) => setFocusModal({ isOpen: true, quest: q })}
                       />
                     ))
                   )}
@@ -394,24 +540,27 @@ export default function Home() {
             )}
           </div>
 
-          {/* Right Column: World Boss Raid & Armory Widget */}
+          {/* Right Column: World Boss Raid, Life Wheel Radar Chart & Armory Widget */}
           <div className="lg:col-span-3 space-y-6">
             <BossCard />
+
+            {/* Hexagonal Life Wheel Balance Radar Chart */}
+            <LifeRadarChart character={character} />
 
             {/* Quick Stats Summary */}
             <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 shadow-xl backdrop-blur-sm">
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
-                Discipline Ledger
+                Today&apos;s Quest Progress
               </h4>
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-2.5">
-                  <span className="text-[10px] text-slate-500 font-medium">Fulfilled</span>
+                  <span className="text-[10px] text-slate-500 font-medium">Completed</span>
                   <div className="text-lg font-black text-emerald-400 font-mono">
                     {completedCount}
                   </div>
                 </div>
                 <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-2.5">
-                  <span className="text-[10px] text-slate-500 font-medium">Pending</span>
+                  <span className="text-[10px] text-slate-500 font-medium">Incomplete</span>
                   <div className="text-lg font-black text-amber-400 font-mono">
                     {pendingCount}
                   </div>
@@ -425,47 +574,64 @@ export default function Home() {
         <div className="block lg:hidden space-y-4">
           {activeTab === 'QUESTS' && (
             <div className="space-y-4">
-              {/* Search & Filter Bar */}
-              <div className="space-y-2">
-                <div className="relative">
-                  <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-500" />
-                  <input
-                    type="text"
-                    placeholder="Search quests..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full rounded-xl border border-slate-800 bg-slate-900/60 pl-10 pr-4 py-2 text-xs text-slate-100 placeholder-slate-500 focus:border-amber-400 focus:outline-none"
-                  />
+              {/* Search & Filter Toolbar */}
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-3 shadow-lg space-y-2.5">
+                <div className="flex items-center gap-2">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-500" />
+                    <input
+                      type="text"
+                      placeholder="Search quests..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full rounded-xl border border-slate-800 bg-slate-950/70 pl-10 pr-4 py-2 text-xs text-slate-100 placeholder-slate-500 focus:border-amber-400 focus:outline-none transition"
+                    />
+                  </div>
+                  <button
+                    onClick={() => setCreateQuestOpen(true)}
+                    className="game-btn flex items-center space-x-1 rounded-xl bg-amber-500 px-3 py-2 text-xs font-bold text-slate-950 shadow-md shadow-amber-500/20 active:scale-95 transition shrink-0"
+                  >
+                    <Plus className="h-4 w-4 stroke-[2.5]" />
+                    <span>New</span>
+                  </button>
                 </div>
 
-                <div className="flex items-center space-x-1.5 overflow-x-auto pb-1">
-                  {['ALL', 'DAILY', 'HABIT', 'TODO', 'BOSS'].map((tab) => (
+                {/* Mobile Row 1: Quest Categories */}
+                <div className="flex items-center space-x-1 overflow-x-auto pb-1 no-scrollbar">
+                  {[
+                    { key: 'ALL', label: 'All' },
+                    { key: 'DAILY', label: 'Dailies' },
+                    { key: 'HABIT', label: 'Habits' },
+                    { key: 'TODO', label: 'To-Dos' },
+                    { key: 'BOSS', label: 'Boss Raids' },
+                  ].map((tab) => (
                     <button
-                      key={tab}
-                      onClick={() => setQuestTypeFilter(tab)}
-                      className={`rounded-lg px-3 py-1 text-xs font-bold whitespace-nowrap transition ${
-                        questTypeFilter === tab
-                          ? 'bg-amber-500 text-slate-950'
-                          : 'bg-slate-900 text-slate-400 border border-slate-800'
+                      key={tab.key}
+                      onClick={() => setQuestTypeFilter(tab.key)}
+                      className={`rounded-lg px-2.5 py-1 text-xs font-bold whitespace-nowrap transition active:scale-95 ${
+                        questTypeFilter === tab.key
+                          ? 'bg-amber-500 text-slate-950 shadow-sm'
+                          : 'bg-slate-950/60 text-slate-400 border border-slate-800/80 hover:text-slate-200'
                       }`}
                     >
-                      {tab}
+                      {tab.label}
                     </button>
                   ))}
                 </div>
 
-                <div className="flex items-center space-x-1.5 overflow-x-auto">
-                  <span className="text-[10px] uppercase font-bold text-slate-500">
+                {/* Mobile Row 2: Stats Chips */}
+                <div className="flex items-center space-x-1.5 overflow-x-auto pt-1.5 border-t border-slate-800/50 pb-0.5 no-scrollbar">
+                  <span className="text-[10px] uppercase font-bold text-slate-500 mr-1 shrink-0">
                     Stat:
                   </span>
                   {['ALL', 'STR', 'INT', 'VIT', 'AGI', 'SPR'].map((attr) => (
                     <button
                       key={attr}
                       onClick={() => setAttributeFilter(attr)}
-                      className={`rounded-md px-2 py-0.5 text-[10px] font-bold transition ${
+                      className={`rounded-md px-2 py-0.5 text-[10px] font-bold transition active:scale-95 shrink-0 ${
                         attributeFilter === attr
-                          ? 'bg-slate-100 text-slate-950'
-                          : 'bg-slate-900 text-slate-400 border border-slate-800'
+                          ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/50 shadow-sm'
+                          : 'bg-slate-950/70 text-slate-400 hover:text-slate-200 border border-slate-800/80'
                       }`}
                     >
                       {attr}
@@ -487,6 +653,7 @@ export default function Home() {
                       quest={quest}
                       onComplete={handleQuestComplete}
                       onDelete={handleQuestDelete}
+                      onStartFocus={(q) => setFocusModal({ isOpen: true, quest: q })}
                     />
                   ))
                 )}
@@ -500,7 +667,11 @@ export default function Home() {
                 user={user}
                 character={character}
                 onOpenShop={() => setActiveTab('SHOP')}
+                onOpenInspect={() => setInspectModalOpen(true)}
+                onOpenAvatarVault={() => setAvatarVaultOpen(true)}
+                onOpenEditProfile={() => setEditProfileOpen(true)}
               />
+              <LifeRadarChart character={character} />
               <StreakHeatmap
                 currentStreak={character.streak}
                 logs={recentLogs}
@@ -542,6 +713,93 @@ export default function Home() {
         isOpen={levelUpModal.isOpen}
         level={levelUpModal.level}
         onClose={() => setLevelUpModal({ isOpen: false, level: 1 })}
+      />
+
+      {/* Dynamic Character Inspect & Evolution Modal */}
+      <CharacterInspectModal
+        isOpen={inspectModalOpen}
+        onClose={() => setInspectModalOpen(false)}
+        user={user}
+        character={character}
+        onUpdateCharacter={fetchSessionAndData}
+        onOpenAvatarVault={() => setAvatarVaultOpen(true)}
+        onOpenEditProfile={() => setEditProfileOpen(true)}
+      />
+
+      {/* Game Avatar Vault / Profile Pic Stack Selector Modal */}
+      <AvatarStackSelectorModal
+        isOpen={avatarVaultOpen}
+        onClose={() => setAvatarVaultOpen(false)}
+        currentAvatarId={user?.avatar || 'crimson-avenger'}
+        user={user}
+        character={character}
+        onAvatarEquipped={(newAvatarId) => {
+          setUser((prev: any) => (prev ? { ...prev, avatar: newAvatarId } : prev));
+          setAvatarVaultOpen(false);
+        }}
+      />
+
+      {/* Edit Profile & Hero Archetype Modal */}
+      {user && character && (
+        <EditProfileModal
+          isOpen={editProfileOpen}
+          onClose={() => setEditProfileOpen(false)}
+          user={user}
+          character={character}
+          onProfileUpdated={fetchSessionAndData}
+          onOpenAvatarVault={() => setAvatarVaultOpen(true)}
+        />
+      )}
+
+      {/* Dawn Report Modal (Daily reset & missed quest damage debrief) */}
+      <DawnReportModal
+        isOpen={dawnReport.isOpen}
+        onClose={() => setDawnReport((prev) => ({ ...prev, isOpen: false }))}
+        report={dawnReport}
+      />
+
+      {/* World Boss Defeat & Loot Chest Modal */}
+      <LootChestModal
+        isOpen={lootChestModal.isOpen}
+        onClose={() => {
+          setLootChestModal((prev) => ({ ...prev, isOpen: false }));
+          fetchSessionAndData();
+        }}
+        defeatedBossName={lootChestModal.defeatedBossName}
+        nextBossName={lootChestModal.nextBossName}
+        lootChest={lootChestModal.lootChest || { gold: 0, xp: 0 }}
+      />
+
+      {/* Hyperfocus Pomodoro Chamber Modal */}
+      <FocusTimerModal
+        isOpen={focusModal.isOpen}
+        onClose={() => setFocusModal({ isOpen: false, quest: null })}
+        quest={focusModal.quest as any}
+        onCompleteQuestWithBonus={handleCompleteQuestWithFocus}
+      />
+
+      {/* RPG Talent Tree & Masteries Modal */}
+      <SkillTreeModal
+        isOpen={skillTreeOpen}
+        onClose={() => setSkillTreeOpen(false)}
+        onSkillUnlocked={fetchSessionAndData}
+      />
+
+      {/* Trophy & Milestone Achievement Hall Modal */}
+      <AchievementsModal
+        isOpen={achievementsOpen}
+        onClose={() => setAchievementsOpen(false)}
+        onRewardClaimed={() => {
+          fetchSessionAndData();
+          fetchAchievementsBadge();
+        }}
+      />
+
+      {/* Co-Op Guild Fellowship & World Boss Raid Modal */}
+      <PartyHub
+        isOpen={partyHubOpen}
+        onClose={() => setPartyHubOpen(false)}
+        onPartyUpdated={fetchSessionAndData}
       />
     </div>
   );

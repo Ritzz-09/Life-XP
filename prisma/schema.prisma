@@ -21,6 +21,9 @@ model User {
   quests          Quest[]
   completions     QuestCompletionLog[]
   inventory       UserItem[]
+  customRewards   CustomReward[]
+  rewardRedemptions RewardRedemptionLog[]
+  partyMember     PartyMember?
 }
 
 model Character {
@@ -43,6 +46,16 @@ model Character {
   vitality            Int      @default(10)
   agility             Int      @default(10)
   spirit              Int      @default(10)
+
+  gender              String   @default("MALE")     // MALE, FEMALE, NON_BINARY
+  characterClass      String   @default("WARRIOR")  // WARRIOR, MAGE, ROGUE, PALADIN
+  bossKills           Int      @default(0)
+
+  // Skill Tree & Achievements
+  skillPoints          Int      @default(0)
+  unlockedSkills       String   @default("[]")
+  unlockedAchievements String   @default("[]")
+  partyId              String?
 
   equippedWeaponId    String?
   equippedArmorId     String?
@@ -128,6 +141,63 @@ model BossEncounter {
   weakness    String   @default("INT")
   rewardGold  Int      @default(250)
   rewardXp    Int      @default(500)
+  tier        Int      @default(1)
+  bossIndex   Int      @default(0)
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
+}
+
+model CustomReward {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title        String
+  description  String   @default("")
+  cost         Int      @default(50)
+  icon         String   @default("Gift")
+  timesClaimed Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model RewardRedemptionLog {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rewardTitle String
+  cost        Int
+  redeemedAt  DateTime @default(now())
+}
+
+model Party {
+  id          String             @id @default(cuid())
+  name        String
+  inviteCode  String             @unique
+  bossTarget  String             @default("Abyssal Void Colossus")
+  bossHp      Int                @default(10000)
+  bossMaxHp   Int                @default(10000)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  members     PartyMember[]
+  activities  PartyActivityLog[]
+}
+
+model PartyMember {
+  id        String   @id @default(cuid())
+  partyId   String
+  party     Party    @relation(fields: [partyId], references: [id], onDelete: Cascade)
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      String   @default("MEMBER") // LEADER, MEMBER
+  joinedAt  DateTime @default(now())
+}
+
+model PartyActivityLog {
+  id        String   @id @default(cuid())
+  partyId   String
+  party     Party    @relation(fields: [partyId], references: [id], onDelete: Cascade)
+  username  String
+  action    String
+  damage    Int      @default(0)
+  timestamp DateTime @default(now())
 }

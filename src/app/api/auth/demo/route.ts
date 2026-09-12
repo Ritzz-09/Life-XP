@@ -29,6 +29,7 @@ export async function POST() {
             create: {
               level: 3,
               xp: 140,
+              gender: 'MALE',
               currentHp: 85,
               maxHp: 125,
               currentMana: 45,
@@ -42,6 +43,28 @@ export async function POST() {
               agility: 14,
               spirit: 12,
             },
+          },
+          customRewards: {
+            create: [
+              {
+                title: '1 Hour Guilt-Free Gaming',
+                description: 'Dive into your favorite video game completely free of guilt and distraction.',
+                cost: 60,
+                icon: 'Gamepad2',
+              },
+              {
+                title: 'Barista Specialty Coffee or Boba',
+                description: 'Treat yourself to a delicious handcrafted beverage at your favorite café.',
+                cost: 40,
+                icon: 'Coffee',
+              },
+              {
+                title: 'Epic Movie Night + Favorite Snacks',
+                description: 'Pick an awesome film, turn down the lights, and enjoy your favorite treats.',
+                cost: 100,
+                icon: 'Film',
+              },
+            ],
           },
           quests: {
             create: STARTER_QUESTS.map((q, idx) => ({
