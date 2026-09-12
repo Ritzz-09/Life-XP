@@ -6,7 +6,7 @@
 }
 
 [data-theme="light"] {
-  --background: #f4f7fb;
+  --background: #f8fafc;
   --foreground: #0f172a;
 }
 
@@ -21,10 +21,12 @@ body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   overflow-x: hidden;
   min-height: 100vh;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* CYBERPUNK OSINT DARK THEME BACKGROUND OVERLAY */
+/* ==========================================================================
+   CYBERPUNK OSINT DARK THEME BACKGROUND OVERLAY
+   ========================================================================== */
 [data-theme="dark"] .cyber-bg-overlay {
   background-image: 
     linear-gradient(to bottom, rgba(6, 11, 22, 0.88), rgba(6, 11, 22, 0.94)),
@@ -43,30 +45,140 @@ body {
   }
 }
 
-/* SLEEK MODERN LIGHT THEME BACKGROUND */
+/* ==========================================================================
+   PREMIUM MODERN DAYLIGHT LIGHT THEME (Linear / Apple High-Tech RPG Feel)
+   ========================================================================== */
 [data-theme="light"] .cyber-bg-overlay {
-  background-color: #f1f5f9;
+  background-color: #f8fafc;
   background-image: 
-    radial-gradient(circle at 10% 10%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 90% 90%, rgba(34, 211, 238, 0.06) 0%, transparent 40%),
-    linear-gradient(#e2e8f0 1px, transparent 1px),
-    linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+    radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.06) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(245, 158, 11, 0.05) 0px, transparent 50%);
+  background-size: cover;
   background-attachment: fixed;
 }
 
-/* Floating binary stream simulation */
-@keyframes streamDrift {
-  0% { transform: translateY(0); opacity: 0.15; }
-  50% { opacity: 0.35; }
-  100% { transform: translateY(-30px); opacity: 0.15; }
+/* Header in Light Mode */
+[data-theme="light"] header {
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
-.binary-stream {
-  animation: streamDrift 6s infinite ease-in-out;
+/* Card Surfaces in Light Mode */
+[data-theme="light"] .bg-slate-900,
+[data-theme="light"] .bg-slate-900\/60,
+[data-theme="light"] .bg-slate-900\/70,
+[data-theme="light"] .bg-slate-900\/80,
+[data-theme="light"] .bg-slate-900\/90,
+[data-theme="light"] .bg-slate-900\/95,
+[data-theme="light"] .bg-slate-950,
+[data-theme="light"] .bg-slate-950\/40,
+[data-theme="light"] .bg-slate-950\/60,
+[data-theme="light"] .bg-slate-950\/70,
+[data-theme="light"] .bg-slate-950\/80,
+[data-theme="light"] .bg-slate-950\/90 {
+  background-color: #ffffff !important;
 }
 
-/* Custom scrollbars */
+/* Recessed interior containers & badges in Light Mode */
+[data-theme="light"] .rounded-xl.bg-slate-950\/60,
+[data-theme="light"] .rounded-xl.bg-slate-950,
+[data-theme="light"] .rounded-lg.bg-slate-950,
+[data-theme="light"] .rounded-lg.bg-slate-950\/60,
+[data-theme="light"] .rounded-lg.bg-slate-950\/40 {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Progress bar background tracks in Light Mode */
+[data-theme="light"] .rounded-full.bg-slate-950 {
+  background-color: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Borders in Light Mode */
+[data-theme="light"] .border-slate-800,
+[data-theme="light"] .border-slate-800\/40,
+[data-theme="light"] .border-slate-800\/60,
+[data-theme="light"] .border-slate-800\/80,
+[data-theme="light"] .border-slate-800\/90,
+[data-theme="light"] .border-slate-700,
+[data-theme="light"] .border-slate-700\/80 {
+  border-color: #e2e8f0 !important;
+}
+
+/* High-Contrast Crisp Typography in Light Mode */
+[data-theme="light"] .text-slate-100,
+[data-theme="light"] .text-slate-200 {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .text-slate-300,
+[data-theme="light"] .text-slate-400 {
+  color: #475569 !important;
+}
+
+[data-theme="light"] .text-slate-500 {
+  color: #64748b !important;
+}
+
+/* Form Inputs & Selects in Light Mode */
+[data-theme="light"] input,
+[data-theme="light"] select,
+[data-theme="light"] textarea {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Card Elevation in Light Mode */
+[data-theme="light"] .rounded-2xl,
+[data-theme="light"] .rounded-3xl,
+[data-theme="light"] .rounded-xl {
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -2px rgba(15, 23, 42, 0.02);
+}
+
+/* Boss Card subtle tint in Light Mode */
+[data-theme="light"] .border-rose-900\/40 {
+  border-color: #fecdd3 !important;
+  background: linear-gradient(to bottom, #ffffff, #fff1f2, #ffffff) !important;
+}
+
+/* Mobile Bottom Dock in Light Mode */
+[data-theme="light"] .fixed.bottom-0 {
+  background-color: rgba(255, 255, 255, 0.94) !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .fixed.bottom-0 button {
+  color: #475569;
+}
+
+[data-theme="light"] .fixed.bottom-0 button.text-amber-400 {
+  color: #d97706 !important;
+}
+
+/* Scrollbars in Light Mode */
+[data-theme="light"] ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Default Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -85,7 +197,7 @@ body {
   background: #0284c7;
 }
 
-/* Glowing cyan & blue pulses */
+/* Glowing animations */
 @keyframes cyberGlow {
   0%, 100% {
     box-shadow: 0 0 15px rgba(34, 211, 238, 0.25), inset 0 0 10px rgba(34, 211, 238, 0.1);

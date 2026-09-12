@@ -63,16 +63,24 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
           <div>
             <div className="flex items-center space-x-2">
-              <span className="font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-200 to-amber-400 text-lg">
+              <span className={`font-black tracking-wider text-transparent bg-clip-text text-lg ${
+                theme === 'dark'
+                  ? 'bg-gradient-to-r from-cyan-300 via-sky-200 to-amber-400'
+                  : 'bg-gradient-to-r from-cyan-700 via-sky-700 to-slate-950'
+              }`}>
                 LIFE RPG
               </span>
-              <span className="hidden rounded-full border border-cyan-500/40 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-mono font-bold text-cyan-300 sm:inline-block">
+              <span className={`hidden rounded-full border px-2 py-0.5 text-[10px] font-mono font-bold sm:inline-block ${
+                theme === 'dark'
+                  ? 'border-cyan-500/40 bg-cyan-500/10 text-cyan-300'
+                  : 'border-cyan-600/30 bg-cyan-50 text-cyan-800'
+              }`}>
                 OSINT_v2.1
               </span>
             </div>
             {user && (
-              <p className="text-xs text-slate-400">
-                {user.username} • <span className="text-cyan-400 font-medium">{user.characterTitle || 'Operative'}</span>
+              <p className={`text-xs ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
+                {user.username} • <span className={`font-semibold ${theme === 'dark' ? 'text-cyan-400' : 'text-cyan-700'}`}>{user.characterTitle || 'Operative'}</span>
               </p>
             )}
           </div>
@@ -83,19 +91,27 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex items-center space-x-2 sm:space-x-3">
             {/* Streak Counter */}
             <div
-              className="flex items-center space-x-1.5 rounded-lg border border-orange-500/30 bg-orange-500/10 px-2.5 py-1 text-orange-400 shadow-inner"
+              className={`flex items-center space-x-1.5 rounded-lg border px-2.5 py-1 shadow-inner ${
+                theme === 'dark'
+                  ? 'border-orange-500/30 bg-orange-500/10 text-orange-400'
+                  : 'border-orange-300 bg-orange-50 text-orange-700'
+              }`}
               title={`${character.streak} Day Streak! +${Math.min(50, (character.streak - 1) * 5)}% bonus XP/Gold`}
             >
-              <Flame className="h-4 w-4 animate-pulse text-orange-400 fill-orange-400/40" />
+              <Flame className="h-4 w-4 animate-pulse text-orange-500 fill-orange-400/40" />
               <span className="font-bold text-xs sm:text-sm tracking-wide">{character.streak}d</span>
             </div>
 
             {/* Gold Counter */}
             <div
-              className="flex items-center space-x-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-2.5 py-1 text-amber-300 shadow-inner"
+              className={`flex items-center space-x-1.5 rounded-lg border px-2.5 py-1 shadow-inner ${
+                theme === 'dark'
+                  ? 'border-amber-500/30 bg-amber-500/10 text-amber-300'
+                  : 'border-amber-300 bg-amber-50 text-amber-800'
+              }`}
               title="Your Realm Gold. Spend it at the Merchant Shop!"
             >
-              <Coins className="h-4 w-4 text-amber-400 fill-amber-400/30" />
+              <Coins className="h-4 w-4 text-amber-500 fill-amber-400/30" />
               <span className="font-bold text-xs sm:text-sm tracking-wide">{character.gold}</span>
             </div>
 
@@ -105,28 +121,36 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onToggleTheme();
                 soundFx.playEquip();
               }}
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-800 bg-slate-900/80 text-slate-400 transition hover:border-cyan-500/50 hover:text-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-400/50"
-              title={theme === 'dark' ? 'Switch to Light Theme' : 'Switch to Cyberpunk Dark Theme'}
+              className={`flex h-9 w-9 items-center justify-center rounded-lg border transition focus:outline-none focus:ring-2 focus:ring-cyan-400/50 ${
+                theme === 'dark'
+                  ? 'border-slate-800 bg-slate-900/80 text-slate-400 hover:border-cyan-500/50 hover:text-cyan-300'
+                  : 'border-slate-300 bg-white text-slate-700 hover:border-cyan-500 hover:text-cyan-800 shadow-sm'
+              }`}
+              title={theme === 'dark' ? 'Switch to Clean Daylight Theme' : 'Switch to Cyberpunk Dark Theme'}
               aria-label="Toggle Theme"
             >
               {theme === 'dark' ? (
                 <Sun className="h-4 w-4 text-amber-400" />
               ) : (
-                <Moon className="h-4 w-4 text-cyan-400" />
+                <Moon className="h-4 w-4 text-cyan-600" />
               )}
             </button>
 
             {/* Sound Toggle */}
             <button
               onClick={handleToggleSound}
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-800 bg-slate-900/80 text-slate-400 transition hover:border-slate-700 hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-400/50"
+              className={`flex h-9 w-9 items-center justify-center rounded-lg border transition focus:outline-none focus:ring-2 focus:ring-amber-400/50 ${
+                theme === 'dark'
+                  ? 'border-slate-800 bg-slate-900/80 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                  : 'border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:text-slate-900 shadow-sm'
+              }`}
               title={soundEnabled ? 'Mute Game Audio' : 'Unmute Game Audio'}
               aria-label={soundEnabled ? 'Mute sound' : 'Unmute sound'}
             >
               {soundEnabled ? (
-                <Volume2 className="h-4 w-4 text-cyan-400" />
+                <Volume2 className={`h-4 w-4 ${theme === 'dark' ? 'text-cyan-400' : 'text-cyan-600'}`} />
               ) : (
-                <VolumeX className="h-4 w-4 text-slate-500" />
+                <VolumeX className="h-4 w-4 text-slate-400" />
               )}
             </button>
 
