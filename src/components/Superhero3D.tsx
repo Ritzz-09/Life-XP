@@ -748,19 +748,19 @@ export const Superhero3D: React.FC<Superhero3DProps> = ({
 
       {/* Floating HUD Controls - Bottom Bar Stack */}
       {showControls && (
-        <div className="absolute bottom-2.5 left-3 right-3 flex flex-col items-center space-y-1.5 pointer-events-none">
-          {/* Weapon & Emote Quick Bar */}
-          <div className="flex items-center space-x-1.5 rounded-2xl bg-slate-950/90 border border-slate-800/90 px-2 py-1 shadow-xl backdrop-blur-md pointer-events-auto overflow-x-auto max-w-full">
+        <div className="absolute bottom-2 left-2 right-2 flex flex-col items-center space-y-1.5 pointer-events-none">
+          {/* Top Row: Weapons & Emotes Combined */}
+          <div className="flex items-center gap-1 rounded-2xl bg-slate-950/90 border border-slate-800/90 px-2 py-1 shadow-xl backdrop-blur-md pointer-events-auto max-w-full overflow-x-auto no-scrollbar">
             {/* Weapon Pickers */}
-            <div className="flex items-center space-x-1 pr-1.5 border-r border-slate-800">
+            <div className="flex items-center space-x-0.5 pr-1.5 border-r border-slate-800 shrink-0">
               {(['KATANA', 'SHIELD', 'STAFF', 'NONE'] as const).map((w) => (
                 <button
                   key={w}
                   onClick={() => setActiveWeapon(w)}
                   title={`Equip ${w}`}
-                  className={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition active:scale-95 whitespace-nowrap ${
+                  className={`px-1.5 py-0.5 rounded-lg text-[10px] font-bold transition active:scale-95 whitespace-nowrap ${
                     activeWeapon === w
-                      ? 'bg-cyan-500/30 text-cyan-300 border border-cyan-500/50 shadow-sm'
+                      ? 'bg-cyan-500/30 text-cyan-300 border border-cyan-500/50 shadow-sm font-black'
                       : 'text-slate-400 hover:text-white'
                   }`}
                 >
@@ -770,7 +770,7 @@ export const Superhero3D: React.FC<Superhero3DProps> = ({
             </div>
 
             {/* Emote Trigger Buttons */}
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-0.5 shrink-0">
               {(
                 [
                   { id: 'idle', label: '🧍 Idle' },
@@ -784,9 +784,9 @@ export const Superhero3D: React.FC<Superhero3DProps> = ({
                   key={e.id}
                   onClick={() => setAnimState(e.id)}
                   title={`Trigger ${e.label} emote`}
-                  className={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition active:scale-95 whitespace-nowrap ${
+                  className={`px-1.5 py-0.5 rounded-lg text-[10px] font-bold transition active:scale-95 whitespace-nowrap ${
                     animState === e.id
-                      ? 'bg-amber-500/30 text-amber-300 border border-amber-500/50 shadow-sm'
+                      ? 'bg-amber-500/30 text-amber-300 border border-amber-500/50 shadow-sm font-black'
                       : 'text-slate-400 hover:text-white'
                   }`}
                 >
@@ -796,35 +796,38 @@ export const Superhero3D: React.FC<Superhero3DProps> = ({
             </div>
           </div>
 
-          {/* Suit Colorway Selector */}
-          <div className="flex items-center space-x-1 rounded-2xl bg-slate-950/90 border border-slate-800/90 p-1 shadow-xl backdrop-blur-md pointer-events-auto overflow-x-auto max-w-full">
-            {(['CRIMSON', 'CYBER', 'SHADOW', 'SOLAR'] as const).map((t) => {
-              const th = SUIT_THEMES[t];
-              const isSelected = suitTheme === t;
-              return (
-                <button
-                  key={t}
-                  onClick={() => setSuitTheme(t)}
-                  title={`Equip ${th.name}`}
-                  className={`flex items-center space-x-1 rounded-xl px-2.5 py-1 text-[10px] font-bold transition active:scale-95 whitespace-nowrap ${
-                    isSelected
-                      ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-md font-black'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
-                  }`}
-                >
-                  <span
-                    className="h-2.5 w-2.5 rounded-full border border-black/40 shadow-sm shrink-0"
-                    style={{ backgroundColor: `#${th.surface.toString(16).padStart(6, '0')}` }}
-                  />
-                  <span>{th.name.split(' ')[0]}</span>
-                </button>
-              );
-            })}
-          </div>
+          {/* Bottom Row: Suits & Subtle Orbit Hint */}
+          <div className="flex items-center justify-between w-full px-1 pointer-events-auto">
+            {/* Suit Colorway Selector */}
+            <div className="flex items-center space-x-1 rounded-2xl bg-slate-950/90 border border-slate-800/90 p-1 shadow-xl backdrop-blur-md">
+              {(['CRIMSON', 'CYBER', 'SHADOW', 'SOLAR'] as const).map((t) => {
+                const th = SUIT_THEMES[t];
+                const isSelected = suitTheme === t;
+                return (
+                  <button
+                    key={t}
+                    onClick={() => setSuitTheme(t)}
+                    title={`Equip ${th.name}`}
+                    className={`flex items-center space-x-1 rounded-xl px-2 py-0.5 text-[10px] font-bold transition active:scale-95 whitespace-nowrap ${
+                      isSelected
+                        ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-md font-black'
+                        : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    <span
+                      className="h-2 w-2 rounded-full border border-black/40 shadow-sm shrink-0"
+                      style={{ backgroundColor: `#${th.surface.toString(16).padStart(6, '0')}` }}
+                    />
+                    <span>{th.name.split(' ')[0]}</span>
+                  </button>
+                );
+              })}
+            </div>
 
-          {/* Interaction hint placed below the suit categories */}
-          <div className="text-[10px] font-mono text-slate-400 bg-slate-950/80 border border-slate-800/80 px-3 py-0.5 rounded-full pointer-events-auto whitespace-nowrap shadow-sm">
-            Drag to Rotate 360° • Scroll to Zoom
+            {/* Interaction hint */}
+            <div className="hidden sm:block text-[9px] font-mono text-slate-400 bg-slate-950/85 border border-slate-800/80 px-2.5 py-1 rounded-full shadow-sm">
+              360° Orbit • Scroll Zoom
+            </div>
           </div>
         </div>
       )}
