@@ -50,3 +50,7 @@ next-env.d.ts
 
 .vercel
 .env*
+.agents/
+skills-lock.json
+scripts/check-*.mjs
+scripts/add-vercel-envs.mjs
