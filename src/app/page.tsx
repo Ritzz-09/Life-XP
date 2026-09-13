@@ -23,6 +23,7 @@ import { PartyHub } from '@/components/PartyHub';
 import { LifeRadarChart } from '@/components/LifeRadarChart';
 import { AutoForgeModal } from '@/components/AutoForgeModal';
 import { ShareHeroModal } from '@/components/ShareHeroModal';
+import { QuestCompletionPopup, QuestCompletionNotice } from '@/components/QuestCompletionPopup';
 import {
   Swords,
   Plus,
@@ -112,6 +113,7 @@ export default function Home() {
   const [autoForgeOpen, setAutoForgeOpen] = useState(false);
   const [shareHeroOpen, setShareHeroOpen] = useState(false);
   const [mobileHubOpen, setMobileHubOpen] = useState(false);
+  const [questCompletionNotice, setQuestCompletionNotice] = useState<QuestCompletionNotice | null>(null);
   const [readyAchievementsCount, setReadyAchievementsCount] = useState(0);
 
   const fetchAchievementsBadge = useCallback(async () => {
@@ -250,6 +252,17 @@ export default function Home() {
             lootChest: data.boss.lootChest,
           });
         }
+
+        // Pop-up celebratory message with quest name and XP earned!
+        setQuestCompletionNotice({
+          questTitle: data.quest?.title || 'Quest',
+          xpEarned: data.rewards?.xp || data.quest?.xpReward || 50,
+          goldEarned: data.rewards?.gold || data.quest?.goldReward || 25,
+          bossDamage: data.boss?.damageDealt,
+          isCrit: data.boss?.isCrit,
+          attribute: data.quest?.attribute,
+        });
+
         // Refresh logs
         fetchSessionAndData();
         return {
@@ -291,6 +304,16 @@ export default function Home() {
             lootChest: data.boss.lootChest,
           });
         }
+
+        // Pop-up celebratory message with quest name and XP earned!
+        setQuestCompletionNotice({
+          questTitle: data.quest?.title || 'Hyperfocus Sprint Quest',
+          xpEarned: data.rewards?.xp || 70,
+          goldEarned: data.rewards?.gold || 35,
+          bossDamage: data.boss?.damageDealt,
+          isCrit: data.boss?.isCrit,
+          attribute: data.quest?.attribute,
+        });
       }
     } catch (err) {
       console.error(err);
@@ -869,6 +892,12 @@ export default function Home() {
         isOpen={partyHubOpen}
         onClose={() => setPartyHubOpen(false)}
         onPartyUpdated={fetchSessionAndData}
+      />
+
+      {/* Celebratory Quest Completion Popup */}
+      <QuestCompletionPopup
+        notice={questCompletionNotice}
+        onClose={() => setQuestCompletionNotice(null)}
       />
     </div>
   );
