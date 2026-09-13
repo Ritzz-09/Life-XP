@@ -888,6 +888,11 @@ export default function Home() {
           character={character}
           onProfileUpdated={fetchSessionAndData}
           onOpenAvatarVault={() => setAvatarVaultOpen(true)}
+          onAccountDeleted={() => {
+            setUser(null);
+            setCharacter(null);
+            window.location.href = '/';
+          }}
         />
       )}
 

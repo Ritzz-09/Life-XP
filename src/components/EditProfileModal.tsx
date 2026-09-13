@@ -7,6 +7,8 @@ import {
   Check,
   Save,
   UserCheck,
+  Trash2,
+  AlertTriangle,
 } from 'lucide-react';
 import { GamerAvatar } from './GamerAvatar';
 import { soundFx } from '@/lib/sound-fx';
@@ -29,6 +31,7 @@ interface EditProfileModalProps {
   };
   onProfileUpdated: () => void;
   onOpenAvatarVault?: () => void;
+  onAccountDeleted?: () => void;
 }
 
 export const EditProfileModal: React.FC<EditProfileModalProps> = ({
@@ -38,6 +41,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
   character,
   onProfileUpdated,
   onOpenAvatarVault,
+  onAccountDeleted,
 }) => {
   const [username, setUsername] = useState(user?.username || '');
   const [characterTitle, setCharacterTitle] = useState(user?.characterTitle || '');
@@ -48,7 +52,43 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
+  // Account Deletion State
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteConfirmationText, setDeleteConfirmationText] = useState('');
+  const [deletingAccount, setDeletingAccount] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
+
   if (!isOpen) return null;
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmationText.trim().toUpperCase() !== 'DELETE') return;
+    setDeletingAccount(true);
+    setDeleteError('');
+
+    try {
+      soundFx.playHurt();
+      const res = await fetch('/api/auth/delete-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to expunge account');
+      }
+
+      onClose();
+      if (onAccountDeleted) {
+        onAccountDeleted();
+      } else {
+        window.location.href = '/';
+      }
+    } catch (err: any) {
+      setDeleteError(err.message || 'Error expunging account');
+    } finally {
+      setDeletingAccount(false);
+    }
+  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -299,6 +339,71 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
               <Save className="h-4 w-4 stroke-[2.5]" />
               <span>{saving ? 'Saving...' : 'Save Changes'}</span>
             </button>
+          </div>
+
+          {/* Danger Zone: Account Deletion */}
+          <div className="mt-8 pt-6 border-t border-red-950/60">
+            <div className="rounded-2xl border border-red-900/40 bg-red-950/20 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-xs font-black uppercase tracking-wider text-red-400 flex items-center gap-1.5">
+                    <AlertTriangle className="h-3.5 w-3.5" />
+                    <span>Danger Zone · Expunge Hero</span>
+                  </h4>
+                  <p className="text-[11px] text-slate-400 mt-0.5">
+                    Permanently delete your hero, quests, inventory, and all realm history.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="px-3 py-1.5 rounded-xl border border-red-800/80 bg-red-950/60 text-red-300 hover:bg-red-900/60 hover:text-white text-xs font-bold transition flex items-center gap-1.5 shrink-0"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  <span>Delete Account</span>
+                </button>
+              </div>
+
+              {/* Confirmation Input Box */}
+              {showDeleteConfirm && (
+                <div className="mt-4 pt-4 border-t border-red-900/40 space-y-3">
+                  <p className="text-xs text-red-200">
+                    This action is <strong className="text-white">permanent and irreversible</strong>. Type <span className="font-mono font-black text-red-400 bg-red-950/80 px-1.5 py-0.5 rounded border border-red-800/60">DELETE</span> below to confirm:
+                  </p>
+                  <input
+                    type="text"
+                    value={deleteConfirmationText}
+                    onChange={(e) => setDeleteConfirmationText(e.target.value)}
+                    placeholder="Type DELETE"
+                    className="w-full rounded-xl border border-red-800/80 bg-slate-950 px-3 py-2 text-xs font-mono text-red-300 placeholder:text-slate-600 focus:border-red-500 focus:outline-none"
+                  />
+                  {deleteError && (
+                    <p className="text-xs text-red-400 font-medium">{deleteError}</p>
+                  )}
+                  <div className="flex items-center justify-end space-x-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowDeleteConfirm(false);
+                        setDeleteConfirmationText('');
+                        setDeleteError('');
+                      }}
+                      className="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white"
+                    >
+                      Nevermind
+                    </button>
+                    <button
+                      type="button"
+                      disabled={deleteConfirmationText.trim().toUpperCase() !== 'DELETE' || deletingAccount}
+                      onClick={handleDeleteAccount}
+                      className="px-4 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-black uppercase tracking-wider transition disabled:opacity-40 disabled:pointer-events-none shadow-lg shadow-red-950/50"
+                    >
+                      {deletingAccount ? 'Expunging...' : 'Confirm Permanent Deletion'}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </form>
       </div>
