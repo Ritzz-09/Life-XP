@@ -15,11 +15,30 @@ async function runTests() {
     gender: 'FEMALE',
   };
 
-  console.log(`[1] Registering user: ${testUser.username} (Gender: ${testUser.gender})...`);
+  console.log(`[1] Dispatching registration OTP for ${testUser.username}...`);
+  const otpRes = await fetch(`${BASE_URL}/api/auth/register/send-otp`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      username: testUser.username,
+      email: testUser.email,
+      password: testUser.password,
+    }),
+  });
+  const otpData = await otpRes.json();
+  if (!otpRes.ok || !otpData.devCode) {
+    throw new Error(`OTP send failed: ${JSON.stringify(otpData)}`);
+  }
+  console.log(`✓ OTP dispatched! Code: ${otpData.devCode}`);
+
+  console.log(`[1b] Verifying OTP and completing registration...`);
   const regRes = await fetch(`${BASE_URL}/api/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(testUser),
+    body: JSON.stringify({
+      ...testUser,
+      otpCode: otpData.devCode,
+    }),
   });
   const regData = await regRes.json();
   if (!regRes.ok) throw new Error(`Registration failed: ${JSON.stringify(regData)}`);
