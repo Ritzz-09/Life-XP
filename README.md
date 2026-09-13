@@ -84,6 +84,8 @@ Life-XP brings that same psychological feedback loop to real life:
 ## 🎮 Core Features & Mechanics
 
 ### 🛡️ Authentication & Account Security
+- **Live Gmail SMTP OTP Verification**: Real-time 6-digit confirmation codes dispatched via Gmail SMTP (`nodemailer`) with Google App Passwords to any user or judge's email inbox within 1–2 seconds.
+- **Evaluator Fast-Track**: Built-in verification sandbox code `847291` for rapid zero-friction judge evaluation.
 - **Frictionless Hero Registration & Security**: Instant character creation, input sanitization, and password salting with `bcryptjs`.
 - **Password Security & Sessions**: Signed HTTP-only JWT cookies for persistent cross-session authentication.
 - **Guest Demo Mode**: One-click preview account to explore Level 3 Hero mechanics immediately.
