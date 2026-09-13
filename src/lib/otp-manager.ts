@@ -163,3 +163,50 @@ export async function sendOtpEmail(
   }
 }
 
+/**
+ * Forwards user feedback / contact form notes to the admin email
+ */
+export async function sendContactNotification({
+  name,
+  email,
+  category,
+  subject,
+  message,
+}: {
+  name: string;
+  email: string;
+  category: string;
+  subject: string;
+  message: string;
+}): Promise<boolean> {
+  const adminEmail = process.env.GMAIL_USER || 'sprithish1409@gmail.com';
+  try {
+    await mailTransporter.sendMail({
+      from: `"Life-XP Feedback" <${adminEmail}>`,
+      to: adminEmail,
+      replyTo: email,
+      subject: `[Life-XP ${category}] ${subject} (from ${name})`,
+      html: `
+        <div style="font-family: sans-serif; background: #0b0f19; color: #f8fafc; padding: 24px; border-radius: 12px; border: 1px solid #1e293b;">
+          <h2 style="color: #f59e0b; margin-top: 0;">📬 New Message from Life-XP User</h2>
+          <p><strong>From:</strong> ${name} &lt;<a href="mailto:${email}" style="color: #38bdf8;">${email}</a>&gt;</p>
+          <p><strong>Category:</strong> <span style="background: #1e293b; padding: 4px 8px; border-radius: 6px; color: #a5f3fc;">${category}</span></p>
+          <p><strong>Subject:</strong> ${subject}</p>
+          <hr style="border: none; border-top: 1px solid #334155; margin: 16px 0;" />
+          <div style="background: #020617; padding: 16px; border-radius: 8px; white-space: pre-wrap; font-size: 14px; line-height: 1.6; color: #e2e8f0;">
+${message}
+          </div>
+          <p style="color: #64748b; font-size: 11px; margin-top: 20px;">
+            You can reply directly to this email to respond to ${name}.
+          </p>
+        </div>
+      `,
+    });
+    console.log(`✅ [CONTACT FORM] Message from ${email} delivered to ${adminEmail}`);
+    return true;
+  } catch (err) {
+    console.error('❌ [CONTACT FORM] Failed to send contact email:', err);
+    return false;
+  }
+}
+

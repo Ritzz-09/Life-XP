@@ -15,14 +15,22 @@ export default function ContactPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    setTimeout(() => {
+    try {
+      await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, category, subject, message }),
+      });
+    } catch (err) {
+      console.error('Failed to send contact message:', err);
+    } finally {
       setSubmitting(false);
       setSubmitted(true);
       soundFx.playCoin();
-    }, 600);
+    }
   };
 
   return (
