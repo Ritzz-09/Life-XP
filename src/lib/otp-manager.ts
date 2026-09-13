@@ -17,8 +17,8 @@ const MAX_ATTEMPTS = 5;
 const mailTransporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.GMAIL_USER || 'sprithish1409@gmail.com',
-    pass: process.env.GMAIL_PASS || 'uxpphxpbzsmasblo',
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS,
   },
 });
 
@@ -115,8 +115,9 @@ export async function sendOtpEmail(
   console.log(`======================================================\n`);
 
   try {
+    const fromAddress = process.env.GMAIL_USER || 'no-reply@life-xp.game';
     const info = await mailTransporter.sendMail({
-      from: `"Life-XP Realm" <${process.env.GMAIL_USER || 'sprithish1409@gmail.com'}>`,
+      from: `"Life-XP Realm" <${fromAddress}>`,
       to: email,
       subject: isReg
         ? `${code} is your Life-XP Guild Registration Code`
