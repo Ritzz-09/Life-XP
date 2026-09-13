@@ -46,12 +46,11 @@ export async function POST(req: Request) {
 
     // Generate & Dispatch OTP
     const { code } = generateOtp(normalizedEmail);
-    const { devCode } = await sendOtpEmail(normalizedEmail, code);
+    await sendOtpEmail(normalizedEmail, code);
 
     return NextResponse.json({
       success: true,
       message: `A 6-digit verification code has been dispatched to ${normalizedEmail}.`,
-      devCode, // Included for frictionless testing/evaluator login
     });
   } catch (error) {
     console.error('OTP Send error:', error);

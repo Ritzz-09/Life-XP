@@ -224,31 +224,6 @@ export const OtpVerificationModal: React.FC<OtpVerificationModalProps> = ({
           </p>
         </div>
 
-        {/* Evaluator Instant Test Assist Banner */}
-        {devCode && (
-          <div className="mt-4 rounded-2xl border border-amber-500/40 bg-amber-500/10 p-3 text-center">
-            <span className="text-[10px] font-black uppercase tracking-wider text-amber-300 flex items-center justify-center">
-              <Zap className="mr-1 h-3.5 w-3.5" /> Evaluator Instant Access Code
-            </span>
-            <div className="mt-1 flex items-center justify-center space-x-2">
-              <span className="font-mono text-xl font-black tracking-widest text-amber-300">
-                {devCode}
-              </span>
-              <button
-                type="button"
-                onClick={() => {
-                  const arr = devCode.split('');
-                  setDigits(arr);
-                  submitCode(devCode);
-                }}
-                className="rounded-lg bg-amber-400 px-2 py-0.5 text-[10px] font-black text-slate-950 hover:bg-amber-300 transition"
-              >
-                Auto-Fill
-              </button>
-            </div>
-          </div>
-        )}
-
         {/* Error Alert */}
         {error && (
           <div className="mt-3 rounded-xl border border-rose-500/30 bg-rose-950/40 p-2.5 text-center text-xs text-rose-300 font-medium">

@@ -92,12 +92,11 @@ export async function POST(req: Request) {
 
     // Generate & Dispatch Registration OTP
     const { code } = generateOtp(normalizedEmail);
-    const { devCode } = await sendOtpEmail(normalizedEmail, code, 'registration');
+    await sendOtpEmail(normalizedEmail, code, 'registration');
 
     return NextResponse.json({
       success: true,
       message: `A 6-digit confirmation code has been dispatched to ${normalizedEmail}.`,
-      devCode,
     });
   } catch (error) {
     console.error('Registration OTP Send error:', error);

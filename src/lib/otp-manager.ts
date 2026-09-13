@@ -105,14 +105,14 @@ export async function sendOtpEmail(
   // Optional: If RESEND_API_KEY or SMTP is set in environment, send real mail
   if (process.env.RESEND_API_KEY) {
     try {
-      await fetch('https://api.resend.com/emails', {
+      const resendRes = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          from: process.env.FROM_EMAIL || 'Life-XP <realm@lifexp.game>',
+          from: process.env.FROM_EMAIL || 'Life-XP <onboarding@resend.dev>',
           to: email,
           subject: isReg
             ? `${code} is your Life-XP Guild Registration Code`
@@ -133,12 +133,14 @@ export async function sendOtpEmail(
                 </span>
               </div>
               <p style="color: #94a3b8; font-size: 12px; margin-bottom: 0;">
-                ⏱️ This code will expire in 5 minutes. If you did not request this, you can safely ignore this parchment.
+                ⏱️ This code will expire in 5 minutes. If you did not request this, you can safely ignore this email.
               </p>
             </div>
           `,
         }),
       });
+      const resendData = await resendRes.json();
+      console.log('Resend dispatch result:', resendData);
     } catch (err) {
       console.error('Failed to send email via Resend API:', err);
     }
