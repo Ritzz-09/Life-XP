@@ -1,4 +1,4 @@
-# ⚔️ Life RPG: The Gamified Discipline & Progression Web App
+# ⚔️ Life-XP: The Gamified Discipline & Progression Web App
 
 > **Turn mundane real-world tasks into an engaging virtual progression system.**  
 > Built with Next.js 16 App Router, TypeScript, Tailwind CSS, Prisma ORM, SQLite/PostgreSQL, and pure Web Audio micro-interactions. Responsive across mobile phones and desktop laptops.
@@ -9,7 +9,7 @@
 
 Traditional habit trackers and to-do lists feel like chores due to the **delayed gratification problem**: going to the gym, reading a book, or coding take months to show physical results. Video games solve this through **immediate feedback loops**, clear progression ladders, and tangible rewards.
 
-**Life RPG** bridges this gap:
+**Life-XP** bridges this gap:
 - **Alive & Tactile**: Instant Web Audio chime feedback on task completion, celebratory level-up fanfare, and canvas particle confetti.
 - **Thematically Cohesive**: Cyber-Arcane / Dark Fantasy RPG aesthetic. Tasks are **Quests**, currency is **Gold**, character growth happens across **5 Core Attributes** (Strength, Intellect, Vitality, Agility, Spirit), and tasks deal damage to an active **World Raid Boss**.
 - **Cross-Device Responsive**: Dedicated mobile bottom dock layout for smartphones and multi-column command deck for laptops.
@@ -122,8 +122,8 @@ Traditional habit trackers and to-do lists feel like chores due to the **delayed
 
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/your-username/life-rpg.git
-cd life-rpg
+git clone https://github.com/Ritzz-09/Life-XP.git
+cd Life-XP
 npm install
 ```
 
@@ -162,31 +162,6 @@ This tests:
 4. Attribute growth & streak multipliers
 5. Boss damage calculation with weakness bonus
 6. Gold balance deduction & armory equipment
-
----
-
-## 📹 7. Walkthrough Video Demonstration Script (90–180s)
-
-To record your demonstration video for submission:
-1. **0:00 - 0:25 | Authentication & Entrance**:
-   - Show the landing page and click **"Enter as Demo Hero"** (or register a new user).
-   - Point out the Hero HUD (Level, HP, Mana, Gold, Streak flame).
-2. **0:25 - 0:55 | Quest Management (CRUD)**:
-   - Click **"Forge Quest"** (or press `N`).
-   - Create a task: *"Master System Design Interview"* (Type: Habit, Attribute: Intellect, Difficulty: Hard).
-   - Show the newly added quest card with its +120 XP and +80 Gold rewards.
-3. **0:55 - 1:20 | Fulfilling Quests & Level Up**:
-   - Check off the newly created quest.
-   - Observe the Web Audio chime, confetti explosion, floating reward pill, and the celebratory **"LEVEL UP!"** modal.
-   - Show how the character's Intellect stat increased and HP restored.
-4. **1:20 - 1:45 | Merchant Armory & Economy**:
-   - Switch to the **Merchant Armory** tab.
-   - Spend earned gold to purchase a weapon or armor piece (e.g. *Tome of Ancient Algorithms*).
-   - Go to your Bag and click **"Equip to Hero"**.
-   - Show the equipped item reflected on the Hero Card.
-5. **1:45 - 2:05 | Database Persistence Proof & Mobile Responsiveness**:
-   - Refresh the page (`F5`) to prove that all stats, inventory, streak, and completed status persist from the database.
-   - Open Chrome DevTools (`Ctrl+Shift+M`) to show the responsive mobile version with the bottom navigation dock.
 
 ---
 
