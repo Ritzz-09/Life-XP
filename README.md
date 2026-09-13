@@ -5,6 +5,7 @@
 > Built with Next.js 16 App Router, React 19, TypeScript, Tailwind CSS, Prisma ORM (SQLite / PostgreSQL), and native Web Audio synthesis. Responsive across mobile phones, tablets, and desktop.
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-life--xp--bice.vercel.app-00dfa2?style=for-the-badge&logo=vercel)](https://life-xp-bice.vercel.app)
+[![Walkthrough Video](https://img.shields.io/badge/Walkthrough_Video-demo.mp4-red?style=for-the-badge)](./demo.mp4)
 [![Next.js 16](https://img.shields.io/badge/Next.js-16.3.5-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![React 19](https://img.shields.io/badge/React-19.2.8-blue?style=for-the-badge&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
@@ -13,6 +14,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
 > 🌐 **Live Website**: [https://life-xp-bice.vercel.app](https://life-xp-bice.vercel.app)  
+> 🎬 **Walkthrough Video**: [Watch demo.mp4](./demo.mp4) *(91 seconds, 4.1MB, zero login required)*  
 > 🗄️ **Production Database**: Neon Serverless PostgreSQL (`aws-us-east-2`)
 
 ---
@@ -82,8 +84,8 @@ Life-XP brings that same psychological feedback loop to real life:
 ## 🎮 Core Features & Mechanics
 
 ### 🛡️ Authentication & Account Security
-- **Email OTP Verification**: Cryptographic 6-digit confirmation codes with 5-minute TTL and 3-attempt brute-force lockout.
-- **Password Security**: Salted hashing with `bcryptjs` and signed HTTP-only JWT cookies.
+- **Frictionless Hero Registration & Security**: Instant character creation, input sanitization, and password salting with `bcryptjs`.
+- **Password Security & Sessions**: Signed HTTP-only JWT cookies for persistent cross-session authentication.
 - **Guest Demo Mode**: One-click preview account to explore Level 3 Hero mechanics immediately.
 
 ### 📐 Quest Engine & Full CRUD
@@ -178,7 +180,7 @@ Run the included automated end-to-end verification test suite:
 node scripts/test-engine.mjs
 ```
 This automatically verifies:
-1. User registration with 2FA Email OTP dispatch & verification
+1. User registration & secure JWT session issuance
 2. Relational database persistence
 3. Non-linear XP leveling mathematics & attribute growth
 4. Dynamic character gender switching (`MALE`, `FEMALE`, `NON_BINARY`)
