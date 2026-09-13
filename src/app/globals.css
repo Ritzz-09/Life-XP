@@ -150,11 +150,22 @@ body {
   color: #6d28d9 !important;
 }
 
+[data-theme="light"] .text-cyan-300,
+[data-theme="light"] .text-cyan-400 {
+  color: #0284c7 !important;
+}
+
 [data-theme="light"] .text-slate-950 {
   color: #020617 !important;
 }
 
 /* Form Inputs & Selects in Light Mode */
+input,
+select,
+textarea {
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
 [data-theme="light"] input,
 [data-theme="light"] select,
 [data-theme="light"] textarea {
@@ -167,6 +178,46 @@ body {
 [data-theme="light"] textarea::placeholder {
   color: #94a3b8 !important;
 }
+
+/* 3D Superhero Viewport in Light Mode (Crisp Cyber-Studio Holodeck) */
+[data-theme="light"] .hero-3d-viewport {
+  background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%) !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04) !important;
+}
+
+[data-theme="light"] .hero-3d-viewport .bg-slate-950\/85,
+[data-theme="light"] .hero-3d-viewport .bg-slate-950\/90,
+[data-theme="light"] .hero-3d-viewport .bg-slate-950\/80 {
+  background-color: rgba(255, 255, 255, 0.94) !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08) !important;
+}
+
+[data-theme="light"] .hero-3d-viewport .text-slate-200,
+[data-theme="light"] .hero-3d-viewport .text-slate-300 {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .hero-3d-viewport .text-slate-400 {
+  color: #475569 !important;
+}
+
+[data-theme="light"] .hero-3d-viewport button.text-slate-400:hover {
+  color: #0284c7 !important;
+  background-color: #f1f5f9 !important;
+}
+
+[data-theme="light"] .hero-3d-viewport .border-slate-800,
+[data-theme="light"] .hero-3d-viewport .border-slate-800\/90,
+[data-theme="light"] .hero-3d-viewport .border-slate-800\/80 {
+  border-color: #e2e8f0 !important;
+}
+
+[data-theme="light"] .hero-3d-viewport .border-r.border-slate-800 {
+  border-right-color: #e2e8f0 !important;
+}
+
 
 /* Card Elevation in Light Mode */
 [data-theme="light"] .rounded-2xl,

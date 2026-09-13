@@ -115,7 +115,7 @@ export const Superhero3D: React.FC<Superhero3DProps> = ({
 
     // 2. Cinematic Studio 3-Point Lighting
     // Key Light (White directional with soft shadow)
-    const keyLight = new THREE.DirectionalLight(0xffffff, 2.8);
+    const keyLight = new THREE.DirectionalLight(0xffffff, 3.2);
     keyLight.position.set(3.5, 4.5, 3.5);
     keyLight.castShadow = true;
     keyLight.shadow.mapSize.width = 1024;
@@ -124,17 +124,22 @@ export const Superhero3D: React.FC<Superhero3DProps> = ({
     scene.add(keyLight);
 
     // Rim Backlight (Cool Cyan edge lighting for dramatic superhero rim)
-    const rimLight = new THREE.DirectionalLight(0x38bdf8, 3.2);
+    const rimLight = new THREE.DirectionalLight(0x38bdf8, 3.4);
     rimLight.position.set(-3.0, 3.0, -3.5);
     scene.add(rimLight);
 
-    // Fill Light (Soft neutral fill)
-    const fillLight = new THREE.DirectionalLight(0xf1f5f9, 1.2);
-    fillLight.position.set(-3.0, 1.0, 3.0);
+    // Fill Light (Soft neutral fill - brightened for crisp visibility in all themes)
+    const fillLight = new THREE.DirectionalLight(0xffffff, 2.2);
+    fillLight.position.set(-3.0, 1.5, 3.5);
     scene.add(fillLight);
 
+    // Frontal Chest/Face Spotlight
+    const frontLight = new THREE.DirectionalLight(0xecfeff, 1.8);
+    frontLight.position.set(0, 2.0, 4.0);
+    scene.add(frontLight);
+
     // Ambient bounce light
-    const ambientLight = new THREE.AmbientLight(0x0f172a, 1.5);
+    const ambientLight = new THREE.AmbientLight(0x1e293b, 1.8);
     scene.add(ambientLight);
 
     // 3. Materials

@@ -199,8 +199,8 @@ export const HeroCard: React.FC<HeroCardProps> = ({
 
       {/* Embedded 3D Superhero Viewport */}
       {show3DHero && (
-        <div className="mt-4 rounded-3xl border border-cyan-500/30 bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 p-2 shadow-2xl overflow-hidden relative animate-fade-in">
-          <div className="h-72 sm:h-80 w-full">
+        <div className="hero-3d-viewport mt-4 rounded-3xl border border-cyan-500/30 bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 p-2 shadow-2xl overflow-hidden relative animate-fade-in">
+          <div className="h-80 sm:h-88 w-full">
             <Superhero3D
               gender={character.gender}
               level={character.level}
