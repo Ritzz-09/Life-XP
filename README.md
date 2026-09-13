@@ -4,12 +4,16 @@
 > **Stop procrastinating. Turn daily discipline, fitness, and study into an RPG progression system.**  
 > Built with Next.js 16 App Router, React 19, TypeScript, Tailwind CSS, Prisma ORM (SQLite / PostgreSQL), and native Web Audio synthesis. Responsive across mobile phones, tablets, and desktop.
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-life--xp--bice.vercel.app-00dfa2?style=for-the-badge&logo=vercel)](https://life-xp-bice.vercel.app)
 [![Next.js 16](https://img.shields.io/badge/Next.js-16.3.5-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![React 19](https://img.shields.io/badge/React-19.2.8-blue?style=for-the-badge&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38bdf8?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![Prisma ORM](https://img.shields.io/badge/Prisma-6.4.1-2d3748?style=for-the-badge&logo=prisma)](https://www.prisma.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+
+> 🌐 **Live Website**: [https://life-xp-bice.vercel.app](https://life-xp-bice.vercel.app)  
+> 🗄️ **Production Database**: Neon Serverless PostgreSQL (`aws-us-east-2`)
 
 ---
 
