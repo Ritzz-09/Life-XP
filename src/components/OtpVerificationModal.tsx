@@ -9,6 +9,10 @@ interface OtpVerificationModalProps {
   onClose: () => void;
   email: string;
   initialDevCode?: string;
+  title?: string;
+  description?: string;
+  onVerify?: (code: string) => Promise<any>;
+  onResend?: () => Promise<string | void>;
   onSuccess: (data: any) => void;
 }
 
@@ -17,6 +21,10 @@ export const OtpVerificationModal: React.FC<OtpVerificationModalProps> = ({
   onClose,
   email,
   initialDevCode = '',
+  title = 'Verify Adventurer Email',
+  description = 'A 6-digit confirmation code was dispatched to:',
+  onVerify,
+  onResend,
   onSuccess,
 }) => {
   const [digits, setDigits] = useState<string[]>(['', '', '', '', '', '']);
@@ -114,15 +122,20 @@ export const OtpVerificationModal: React.FC<OtpVerificationModalProps> = ({
     setError('');
 
     try {
-      const res = await fetch('/api/auth/otp/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, code: codeToVerify }),
-      });
+      let data: any;
+      if (onVerify) {
+        data = await onVerify(codeToVerify);
+      } else {
+        const res = await fetch('/api/auth/otp/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, code: codeToVerify }),
+        });
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to verify code');
+        data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || 'Failed to verify code');
+        }
       }
 
       soundFx.playCoin();
@@ -141,16 +154,23 @@ export const OtpVerificationModal: React.FC<OtpVerificationModalProps> = ({
     setResending(true);
     setError('');
     try {
-      const res = await fetch('/api/auth/otp/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to resend code');
+      if (onResend) {
+        const newCode = await onResend();
+        if (typeof newCode === 'string' && newCode) {
+          setDevCode(newCode);
+        }
+      } else {
+        const res = await fetch('/api/auth/otp/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to resend code');
+        setDevCode(data.devCode || '');
+      }
 
       soundFx.playCoin();
-      setDevCode(data.devCode || '');
       setSecondsLeft(300);
       setDigits(['', '', '', '', '', '']);
       inputsRef.current[0]?.focus();
@@ -196,9 +216,9 @@ export const OtpVerificationModal: React.FC<OtpVerificationModalProps> = ({
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 ring-4 ring-cyan-500/10">
             <ShieldCheck className="h-7 w-7" />
           </div>
-          <h3 className="text-lg font-black text-white">Two-Factor OTP Verification</h3>
+          <h3 className="text-lg font-black text-white">{title}</h3>
           <p className="text-xs text-slate-400">
-            A 6-digit security code was dispatched to:
+            {description}
             <br />
             <span className="font-mono text-cyan-300 font-semibold">{email}</span>
           </p>

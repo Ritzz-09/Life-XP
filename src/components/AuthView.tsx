@@ -14,7 +14,7 @@ interface AuthViewProps {
 }
 
 export const AuthView: React.FC<AuthViewProps> = ({ onSuccess }) => {
-  const [authMode, setAuthMode] = useState<'PASSWORD' | 'OTP' | 'REGISTER'>('PASSWORD');
+  const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState('');
   const [identifier, setIdentifier] = useState('');
   const [email, setEmail] = useState('');
@@ -51,66 +51,77 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess }) => {
     }
   };
 
-  const handleSendOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!otpEmail.trim()) {
-      setError('Please enter your adventurer email address.');
-      return;
-    }
-    setLoading(true);
-    setError('');
-
-    try {
-      const res = await fetch('/api/auth/otp/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: otpEmail }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to dispatch verification code');
-      }
-
-      soundFx.playCoin();
-      setDevCode(data.devCode || '');
-      setOtpModalOpen(true);
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Failed to dispatch verification code');
-      soundFx.playHurt();
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    try {
-      const endpoint = authMode === 'PASSWORD' ? '/api/auth/login' : '/api/auth/register';
-      const payload = authMode === 'PASSWORD'
-        ? { identifier, password }
-        : { username, email, password, avatar, gender };
+    if (isLogin) {
+      // Direct login with password
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ identifier, password }),
+        });
 
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || 'Authentication failed');
+        }
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || 'Authentication failed');
+        soundFx.playCoin();
+        onSuccess(data);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Authentication failed');
+        soundFx.playHurt();
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      // Registration: dispatch OTP to verify email first
+      if (username.trim().length < 3) {
+        setError('Hero Name must be between 3 and 24 characters');
+        setLoading(false);
+        return;
+      }
+      if (!email.trim() || !email.includes('@')) {
+        setError('Please provide a valid email address');
+        setLoading(false);
+        return;
+      }
+      if (password.length < 8) {
+        setError('Password must be at least 8 characters for guild security');
+        setLoading(false);
+        return;
       }
 
-      soundFx.playCoin();
-      onSuccess(data);
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Authentication failed');
-    } finally {
-      setLoading(false);
+      try {
+        const res = await fetch('/api/auth/register/send-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: username.trim(),
+            email: email.trim(),
+            password,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || 'Failed to dispatch email verification code');
+        }
+
+        soundFx.playCoin();
+        setDevCode(data.devCode || '');
+        setOtpEmail(email.trim());
+        setOtpModalOpen(true);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Registration failed');
+        soundFx.playHurt();
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -158,31 +169,22 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess }) => {
             <div className="flex-grow border-t border-slate-800"></div>
           </div>
 
-          {/* Tab Switch - 3 Modes */}
-          <div className="mt-2 grid grid-cols-3 gap-1 rounded-xl bg-slate-950 p-1 border border-slate-800">
+          {/* Tab Switch - 2 Modes: Sign In & Join Guild */}
+          <div className="mt-2 grid grid-cols-2 gap-1 rounded-xl bg-slate-950 p-1 border border-slate-800">
             <button
               type="button"
-              onClick={() => { setAuthMode('PASSWORD'); setError(''); }}
+              onClick={() => { setIsLogin(true); setError(''); }}
               className={`rounded-lg py-2 text-xs font-bold transition flex items-center justify-center ${
-                authMode === 'PASSWORD' ? 'bg-amber-500 text-slate-950 shadow' : 'text-slate-400 hover:text-slate-200'
+                isLogin ? 'bg-amber-500 text-slate-950 shadow' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              Password
+              Sign In
             </button>
             <button
               type="button"
-              onClick={() => { setAuthMode('OTP'); setError(''); }}
+              onClick={() => { setIsLogin(false); setError(''); }}
               className={`rounded-lg py-2 text-xs font-bold transition flex items-center justify-center ${
-                authMode === 'OTP' ? 'bg-amber-500 text-slate-950 shadow' : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              Email OTP
-            </button>
-            <button
-              type="button"
-              onClick={() => { setAuthMode('REGISTER'); setError(''); }}
-              className={`rounded-lg py-2 text-xs font-bold transition flex items-center justify-center ${
-                authMode === 'REGISTER' ? 'bg-amber-500 text-slate-950 shadow' : 'text-slate-400 hover:text-slate-200'
+                !isLogin ? 'bg-amber-500 text-slate-950 shadow' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               Join Guild
@@ -195,195 +197,158 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess }) => {
             </div>
           )}
 
-          {/* OTP Mode Form */}
-          {authMode === 'OTP' ? (
-            <form onSubmit={handleSendOtp} className="mt-4 space-y-4">
-              <div className="rounded-xl border border-cyan-500/30 bg-cyan-500/10 p-3 text-xs text-cyan-300">
-                <p className="font-semibold mb-0.5">Passwordless Login</p>
-                <p className="text-[11px] text-slate-300">
-                  Enter your registered hero email to receive a secure 6-digit one-time code.
-                </p>
-              </div>
-
+          {/* Authentication & Registration Form */}
+          <form onSubmit={handleSubmit} className="mt-4 space-y-3.5">
+            {!isLogin && (
               <div>
                 <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                  Adventurer Email Address
+                  Hero Name
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3.5 top-3 h-4 w-4 text-slate-500" />
+                  <User className="absolute left-3.5 top-3 h-4 w-4 text-slate-500" />
                   <input
-                    type="email"
+                    type="text"
                     required
-                    placeholder="adventurer@realm.com"
-                    value={otpEmail}
-                    onChange={(e) => setOtpEmail(e.target.value)}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 pl-10 pr-4 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:border-cyan-400 focus:outline-none"
+                    placeholder="e.g. Roland of Eldoria"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="w-full rounded-xl border border-slate-700 bg-slate-950 pl-10 pr-4 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:border-amber-400 focus:outline-none"
                   />
                 </div>
               </div>
+            )}
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 py-3 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-cyan-500/25 hover:brightness-110 active:scale-95 transition disabled:opacity-50"
-              >
-                {loading ? 'Dispatching Code...' : 'Send Verification Code'}
-              </button>
-            </form>
-          ) : (
-            /* Password / Register Form */
-            <form onSubmit={handleSubmit} className="mt-4 space-y-3.5">
-              {authMode === 'REGISTER' && (
-                <div>
-                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                    Hero Name
-                  </label>
-                  <div className="relative">
-                    <User className="absolute left-3.5 top-3 h-4 w-4 text-slate-500" />
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Roland of Eldoria"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      className="w-full rounded-xl border border-slate-700 bg-slate-950 pl-10 pr-4 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:border-amber-400 focus:outline-none"
-                    />
-                  </div>
+            <div>
+              <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
+                {isLogin ? 'Email or Hero Name' : 'Email Address'}
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3.5 top-3 h-4 w-4 text-slate-500" />
+                <input
+                  type={isLogin ? 'text' : 'email'}
+                  required
+                  placeholder={isLogin ? 'adventurer@realm.com or HeroName' : 'adventurer@realm.com'}
+                  value={isLogin ? identifier : email}
+                  onChange={(e) => (isLogin ? setIdentifier(e.target.value) : setEmail(e.target.value))}
+                  className="w-full rounded-xl border border-slate-700 bg-slate-950 pl-10 pr-4 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:border-amber-400 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
+                Secret Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3.5 top-3 h-4 w-4 text-slate-500" />
+                <input
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full rounded-xl border border-slate-700 bg-slate-950 pl-10 pr-4 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:border-amber-400 focus:outline-none"
+                />
+              </div>
+              {isLogin && (
+                <div className="mt-1.5 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setForgotPasswordOpen(true)}
+                    className="text-[11px] font-medium text-amber-400/90 hover:text-amber-300 transition hover:underline"
+                  >
+                    Forgot Master Password?
+                  </button>
                 </div>
               )}
+            </div>
 
-              <div>
-                <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                  {authMode === 'PASSWORD' ? 'Email or Hero Name' : 'Email Address'}
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-3.5 top-3 h-4 w-4 text-slate-500" />
-                  <input
-                    type={authMode === 'PASSWORD' ? 'text' : 'email'}
-                    required
-                    placeholder={authMode === 'PASSWORD' ? 'adventurer@realm.com or HeroName' : 'adventurer@realm.com'}
-                    value={authMode === 'PASSWORD' ? identifier : email}
-                    onChange={(e) => (authMode === 'PASSWORD' ? setIdentifier(e.target.value) : setEmail(e.target.value))}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 pl-10 pr-4 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:border-amber-400 focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                  Secret Password
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3.5 top-3 h-4 w-4 text-slate-500" />
-                  <input
-                    type="password"
-                    required
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 pl-10 pr-4 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:border-amber-400 focus:outline-none"
-                  />
-                </div>
-                {authMode === 'PASSWORD' && (
-                  <div className="mt-1.5 flex justify-end">
-                    <button
-                      type="button"
-                      onClick={() => setForgotPasswordOpen(true)}
-                      className="text-[11px] font-medium text-amber-400/90 hover:text-amber-300 transition hover:underline"
-                    >
-                      Forgot Master Password?
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {authMode === 'REGISTER' && (
-                <>
-                  {/* Hero Gender Selection */}
-                  <div>
-                    <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
-                      Hero Identity & Visual Form
-                    </label>
-                    <div className="flex items-center space-x-3 rounded-2xl border border-slate-800 bg-slate-950 p-2.5">
-                      <CharacterVisual
-                        gender={gender}
-                        level={1}
-                        mode="portrait"
-                        className="h-14 w-14 shrink-0"
-                      />
-                      <div className="grid grid-cols-3 gap-1.5 flex-1">
-                        {[
-                          { key: 'MALE', label: 'Male' },
-                          { key: 'FEMALE', label: 'Female' },
-                          { key: 'NON_BINARY', label: 'Enby' },
-                        ].map((g) => (
-                          <button
-                            key={g.key}
-                            type="button"
-                            onClick={() => {
-                              setGender(g.key as any);
-                              soundFx.playEquip();
-                            }}
-                            className={`rounded-xl border py-2 text-center text-xs font-bold transition ${
-                              gender === g.key
-                                ? 'border-amber-400 bg-amber-500/20 text-amber-300 ring-1 ring-amber-400'
-                                : 'border-slate-800 bg-slate-900/80 text-slate-400 hover:text-slate-200'
-                            }`}
-                          >
-                            {g.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
-                      Starter Game Avatar (Profile Pic)
-                    </label>
-                    <div className="grid grid-cols-4 gap-2">
-                      {starterAvatars.map((starter) => (
+            {!isLogin && (
+              <>
+                {/* Hero Gender Selection */}
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                    Hero Identity & Visual Form
+                  </label>
+                  <div className="flex items-center space-x-3 rounded-2xl border border-slate-800 bg-slate-950 p-2.5">
+                    <CharacterVisual
+                      gender={gender}
+                      level={1}
+                      mode="portrait"
+                      className="h-14 w-14 shrink-0"
+                    />
+                    <div className="grid grid-cols-3 gap-1.5 flex-1">
+                      {[
+                        { key: 'MALE', label: 'Male' },
+                        { key: 'FEMALE', label: 'Female' },
+                        { key: 'NON_BINARY', label: 'Enby' },
+                      ].map((g) => (
                         <button
-                          key={starter.key}
+                          key={g.key}
                           type="button"
                           onClick={() => {
-                            setAvatar(starter.key);
+                            setGender(g.key as any);
                             soundFx.playEquip();
                           }}
-                          className={`flex flex-col items-center justify-between rounded-xl border p-2 text-center transition ${
-                            avatar === starter.key
-                              ? 'border-amber-400 bg-amber-500/20 text-amber-300 ring-1 ring-amber-400 shadow-md shadow-amber-500/20'
-                              : 'border-slate-800 bg-slate-950 text-slate-400 hover:text-slate-200'
+                          className={`rounded-xl border py-2 text-center text-xs font-bold transition ${
+                            gender === g.key
+                              ? 'border-amber-400 bg-amber-500/20 text-amber-300 ring-1 ring-amber-400'
+                              : 'border-slate-800 bg-slate-900/80 text-slate-400 hover:text-slate-200'
                           }`}
                         >
-                          <GamerAvatar
-                            avatarId={starter.key}
-                            size="sm"
-                            showFrame={false}
-                            className="mb-1"
-                          />
-                          <div className="text-[10px] font-bold truncate w-full">{starter.label}</div>
-                          <div className="text-[8px] text-slate-500 truncate w-full">{starter.sub}</div>
+                          {g.label}
                         </button>
                       ))}
                     </div>
                   </div>
-                </>
-              )}
+                </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="mt-2 w-full rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 py-3 text-xs font-black uppercase tracking-wider text-slate-950 shadow-lg shadow-amber-500/20 hover:brightness-110 active:scale-95 transition disabled:opacity-50"
-              >
-                {loading
-                  ? 'Channeling...'
-                  : authMode === 'PASSWORD'
-                  ? 'Enter Realm'
-                  : 'Embark on Journey'}
-              </button>
-            </form>
-          )}
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                    Starter Game Avatar (Profile Pic)
+                  </label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {starterAvatars.map((starter) => (
+                      <button
+                        key={starter.key}
+                        type="button"
+                        onClick={() => {
+                          setAvatar(starter.key);
+                          soundFx.playEquip();
+                        }}
+                        className={`flex flex-col items-center justify-between rounded-xl border p-2 text-center transition ${
+                          avatar === starter.key
+                            ? 'border-amber-400 bg-amber-500/20 text-amber-300 ring-1 ring-amber-400 shadow-md shadow-amber-500/20'
+                            : 'border-slate-800 bg-slate-950 text-slate-400 hover:text-slate-200'
+                        }`}
+                      >
+                        <GamerAvatar
+                          avatarId={starter.key}
+                          size="sm"
+                          showFrame={false}
+                          className="mb-1"
+                        />
+                        <div className="text-[10px] font-bold truncate w-full">{starter.label}</div>
+                        <div className="text-[8px] text-slate-500 truncate w-full">{starter.sub}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="mt-2 w-full rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 py-3 text-xs font-black uppercase tracking-wider text-slate-950 shadow-lg shadow-amber-500/20 hover:brightness-110 active:scale-95 transition disabled:opacity-50"
+            >
+              {loading
+                ? 'Channeling...'
+                : isLogin
+                ? 'Enter Realm'
+                : 'Embark on Journey (Verify via Email OTP)'}
+            </button>
+          </form>
         </div>
       </div>
 
@@ -392,16 +357,53 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess }) => {
         isOpen={forgotPasswordOpen}
         onClose={() => setForgotPasswordOpen(false)}
         onPasswordResetSuccess={() => {
-          setAuthMode('PASSWORD');
+          setIsLogin(true);
         }}
       />
 
-      {/* OTP Verification Modal */}
+      {/* OTP Verification Modal for Registration */}
       <OtpVerificationModal
         isOpen={otpModalOpen}
         onClose={() => setOtpModalOpen(false)}
         email={otpEmail}
         initialDevCode={devCode}
+        title="Verify Adventurer Email"
+        description="A 6-digit confirmation code was dispatched to activate your guild membership:"
+        onVerify={async (code: string) => {
+          const res = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              username: username.trim(),
+              email: otpEmail,
+              password,
+              avatar,
+              gender,
+              otpCode: code,
+            }),
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            throw new Error(data.error || 'Registration verification failed');
+          }
+          return data;
+        }}
+        onResend={async () => {
+          const res = await fetch('/api/auth/register/send-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              username: username.trim(),
+              email: otpEmail,
+              password,
+            }),
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            throw new Error(data.error || 'Failed to resend confirmation code');
+          }
+          return data.devCode;
+        }}
         onSuccess={onSuccess}
       />
     </div>

@@ -91,10 +91,12 @@ export function verifyOtp(
  */
 export async function sendOtpEmail(
   email: string,
-  code: string
+  code: string,
+  purpose: 'login' | 'registration' = 'registration'
 ): Promise<{ delivered: boolean; devCode: string }> {
+  const isReg = purpose === 'registration';
   console.log(`\n======================================================`);
-  console.log(`⚡ [LIFE-XP AUTH] EMAIL OTP VERIFICATION DISPATCHED`);
+  console.log(`⚡ [LIFE-XP AUTH] EMAIL OTP VERIFICATION DISPATCHED (${purpose.toUpperCase()})`);
   console.log(`✉️  Recipient: ${email}`);
   console.log(`🔑 Verification Code: ${code}`);
   console.log(`⏱️  Valid For: 5 Minutes (Expires at ${new Date(Date.now() + OTP_TTL_MS).toLocaleTimeString()})`);
@@ -112,13 +114,27 @@ export async function sendOtpEmail(
         body: JSON.stringify({
           from: process.env.FROM_EMAIL || 'Life-XP <realm@lifexp.game>',
           to: email,
-          subject: `${code} is your Life-XP Realm Login Code`,
+          subject: isReg
+            ? `${code} is your Life-XP Guild Registration Code`
+            : `${code} is your Life-XP Realm Login Code`,
           html: `
-            <div style="font-family: sans-serif; background: #020617; color: #f8fafc; padding: 24px; border-radius: 16px;">
-              <h2 style="color: #f59e0b;">Life-XP Realm Verification</h2>
-              <p>Your one-time security code to enter the realm is:</p>
-              <h1 style="font-size: 36px; letter-spacing: 6px; color: #38bdf8; background: #0f172a; padding: 12px; display: inline-block; border-radius: 8px;">${code}</h1>
-              <p style="color: #94a3b8; font-size: 12px;">This code will expire in 5 minutes. If you did not request this, you can safely ignore this email.</p>
+            <div style="font-family: sans-serif; background: #020617; color: #f8fafc; padding: 28px; border-radius: 16px; border: 1px solid #1e293b; max-width: 500px; margin: auto;">
+              <h2 style="color: #f59e0b; margin-top: 0; font-size: 24px;">⚡ Life-XP Realm</h2>
+              <p style="color: #cbd5e1; font-size: 15px; line-height: 1.5;">
+                ${
+                  isReg
+                    ? 'Welcome, brave adventurer! Enter this 6-digit confirmation code to activate your guild membership and begin your journey:'
+                    : 'Your one-time security code to enter the realm is:'
+                }
+              </p>
+              <div style="text-align: center; margin: 24px 0;">
+                <span style="font-size: 38px; font-weight: 800; letter-spacing: 8px; color: #38bdf8; background: #0f172a; padding: 14px 24px; display: inline-block; border-radius: 12px; border: 1px solid #0284c7;">
+                  ${code}
+                </span>
+              </div>
+              <p style="color: #94a3b8; font-size: 12px; margin-bottom: 0;">
+                ⏱️ This code will expire in 5 minutes. If you did not request this, you can safely ignore this parchment.
+              </p>
             </div>
           `,
         }),

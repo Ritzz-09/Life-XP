@@ -4,13 +4,14 @@ import { hashPassword, signToken, AUTH_COOKIE_NAME } from '@/lib/auth';
 import { ensureSeedData } from '@/lib/ensure-seed';
 import { STARTER_QUESTS } from '@/lib/seed-data';
 import { rateLimiter, getClientIp } from '@/lib/rate-limiter';
+import { verifyOtp } from '@/lib/otp-manager';
 
 export async function POST(req: Request) {
   try {
     await ensureSeedData();
 
     const clientIp = getClientIp(req);
-    const rateCheck = rateLimiter.check(`register:${clientIp}`, 4, 30 * 60 * 1000); // 4 registrations per 30 mins per IP
+    const rateCheck = rateLimiter.check(`register:${clientIp}`, 8, 30 * 60 * 1000); // 8 registrations per 30 mins per IP
 
     if (!rateCheck.allowed) {
       return NextResponse.json(
@@ -25,10 +26,17 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { username, email, password, avatar = 'warrior', gender = 'MALE' } = body;
+    const { username, email, password, avatar = 'warrior', gender = 'MALE', otpCode } = body;
 
     if (!username || !email || !password) {
       return NextResponse.json({ error: 'Username, email, and password are required' }, { status: 400 });
+    }
+
+    if (!otpCode) {
+      return NextResponse.json(
+        { error: 'Email confirmation code is required to complete registration' },
+        { status: 400 }
+      );
     }
 
     // Input sanitization & validation for security pentest
@@ -51,12 +59,34 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Password must be at least 8 characters for account security' }, { status: 400 });
     }
 
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // Verify Email OTP
+    const otpResult = verifyOtp(normalizedEmail, otpCode);
+    if (!otpResult.success) {
+      return NextResponse.json(
+        { error: otpResult.error || 'Invalid or expired email verification code' },
+        { status: 400 }
+      );
+    }
+
     const existingUser = await prisma.user.findUnique({
-      where: { email: email.toLowerCase() },
+      where: { email: normalizedEmail },
     });
 
     if (existingUser) {
       return NextResponse.json({ error: 'A hero with this email already exists' }, { status: 409 });
+    }
+
+    const existingUsername = await prisma.user.findFirst({
+      where: { username: { equals: trimmedUsername } },
+    });
+
+    if (existingUsername) {
+      return NextResponse.json(
+        { error: 'Hero Name is already claimed by another adventurer' },
+        { status: 409 }
+      );
     }
 
     const passwordHash = await hashPassword(password);
