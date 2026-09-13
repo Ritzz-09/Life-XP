@@ -22,12 +22,35 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://life-xp.game'),
   title: "Life-XP | Gamified Real-Life Habit Tracker & Superhero Evolution",
   description: "Turn your daily routines, fitness, and goals into an epic RPG adventure with 3D superheroes, co-op raids, talent trees, and focus timers.",
   manifest: "/manifest.json",
   icons: {
     icon: "/favicon.svg",
     apple: "/apple-touch-icon.png",
+  },
+  openGraph: {
+    title: "Life-XP | Gamified Real-Life Habit Tracker & Superhero Evolution",
+    description: "Turn your daily routines, fitness, and goals into an epic RPG adventure with 3D superheroes, co-op raids, talent trees, and focus timers.",
+    url: "https://life-xp.game",
+    siteName: "Life-XP",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Life-XP - Gamified Habit Tracker & Superhero Evolution",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Life-XP | Gamified Real-Life Habit Tracker & Superhero Evolution",
+    description: "Turn your daily routines, fitness, and goals into an epic RPG adventure with 3D superheroes, co-op raids, talent trees, and focus timers.",
+    images: ["/og-image.png"],
   },
   appleWebApp: {
     capable: true,

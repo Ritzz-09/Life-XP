@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "db:postgres": "node scripts/switch-db.mjs postgresql",
+    "db:sqlite": "node scripts/switch-db.mjs sqlite"
   },
   "dependencies": {
     "@prisma/client": "^6.4.1",
