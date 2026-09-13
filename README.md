@@ -5,7 +5,8 @@
 > Built with Next.js 16 App Router, React 19, TypeScript, Tailwind CSS, Prisma ORM (SQLite / PostgreSQL), and native Web Audio synthesis. Responsive across mobile phones, tablets, and desktop.
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-life--xp--bice.vercel.app-00dfa2?style=for-the-badge&logo=vercel)](https://life-xp-bice.vercel.app)
-[![Walkthrough Video](https://img.shields.io/badge/Walkthrough_Video-demo.mp4-red?style=for-the-badge)](https://github.com/Ritzz-09/Life-XP/raw/main/demo.mp4)
+[![2-Min Submission Video](https://img.shields.io/badge/2--Min_Demo-demo.mp4-red?style=for-the-badge)](https://github.com/Ritzz-09/Life-XP/raw/main/demo.mp4)
+[![5-Min Deep Dive](https://img.shields.io/badge/5--Min_Walkthrough-demo--5min.mp4-purple?style=for-the-badge)](https://github.com/Ritzz-09/Life-XP/raw/main/demo-5min.mp4)
 [![Next.js 16](https://img.shields.io/badge/Next.js-16.3.5-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![React 19](https://img.shields.io/badge/React-19.2.8-blue?style=for-the-badge&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
@@ -14,7 +15,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
 > 🌐 **Live Website**: [https://life-xp-bice.vercel.app](https://life-xp-bice.vercel.app)  
-> 🎬 **Walkthrough Video**: [Watch / Download demo.mp4 (91 seconds)](https://github.com/Ritzz-09/Life-XP/raw/main/demo.mp4) *(High-definition demo video, zero login required)*  
+> ⚡ **2-Min Submission Demo**: [Watch demo.mp4 (91 seconds)](https://github.com/Ritzz-09/Life-XP/raw/main/demo.mp4) *(Fast-paced overview for hackathon submission & evaluators)*  
+> 🎬 **5-Min Full Walkthrough**: [Watch demo-5min.mp4 (5 minutes)](https://github.com/Ritzz-09/Life-XP/raw/main/demo-5min.mp4) *(Comprehensive deep dive into all features, boss raids, audio synth, and guild parties)*  
 > 🗄️ **Production Database**: Neon Serverless PostgreSQL (`aws-us-east-2`)
 
 ---
