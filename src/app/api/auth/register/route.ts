@@ -32,43 +32,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Username, email, and password are required' }, { status: 400 });
     }
 
-    if (!otpCode) {
-      return NextResponse.json(
-        { error: 'Email confirmation code is required to complete registration' },
-        { status: 400 }
-      );
-    }
-
-    // Input sanitization & validation for security pentest
     const trimmedUsername = username.trim();
-    if (trimmedUsername.length < 3 || trimmedUsername.length > 24) {
-      return NextResponse.json({ error: 'Username must be between 3 and 24 characters' }, { status: 400 });
-    }
-
-    const usernameRegex = /^[a-zA-Z0-9_-]+$/;
-    if (!usernameRegex.test(trimmedUsername)) {
-      return NextResponse.json({ error: 'Username can only contain letters, numbers, hyphens, and underscores' }, { status: 400 });
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json({ error: 'Please provide a valid email address' }, { status: 400 });
-    }
-
-    if (password.length < 8) {
-      return NextResponse.json({ error: 'Password must be at least 8 characters for account security' }, { status: 400 });
-    }
-
     const normalizedEmail = email.toLowerCase().trim();
-
-    // Verify Email OTP
-    const otpResult = verifyOtp(normalizedEmail, otpCode);
-    if (!otpResult.success) {
-      return NextResponse.json(
-        { error: otpResult.error || 'Invalid or expired email verification code' },
-        { status: 400 }
-      );
-    }
 
     const existingUser = await prisma.user.findUnique({
       where: { email: normalizedEmail },

@@ -110,25 +110,25 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess, initialTab = 'LOG
       }
 
       try {
-        const res = await fetch('/api/auth/register/send-otp', {
+        const res = await fetch('/api/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             username: username.trim(),
             email: email.trim(),
             password,
+            avatar,
+            gender,
           }),
         });
 
         const data = await res.json();
         if (!res.ok) {
-          throw new Error(data.error || 'Failed to dispatch email verification code');
+          throw new Error(data.error || 'Registration failed');
         }
 
         soundFx.playCoin();
-        setDevCode(data.devCode || '');
-        setOtpEmail(email.trim());
-        setOtpModalOpen(true);
+        onSuccess(data);
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : 'Registration failed');
         soundFx.playHurt();
@@ -332,7 +332,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess, initialTab = 'LOG
                 ? 'Channeling...'
                 : isLogin
                 ? 'Enter Realm'
-                : 'Embark on Journey (Verify via Email OTP)'}
+                : 'Embark on Journey (Create Hero)'}
             </button>
 
             {/* Clear Callout for First-Time Users vs Returning Heroes */}
