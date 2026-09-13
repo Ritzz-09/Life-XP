@@ -775,6 +775,7 @@ export default function Home() {
                 onOpenAvatarVault={() => setAvatarVaultOpen(true)}
                 onOpenEditProfile={() => setEditProfileOpen(true)}
                 onShareHero={() => setShareHeroOpen(true)}
+                onLogout={handleLogout}
               />
               <LifeRadarChart character={character} />
               <StreakHeatmap

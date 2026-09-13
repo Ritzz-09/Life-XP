@@ -14,6 +14,7 @@ import {
   Box,
   UserCog,
   Share2,
+  LogOut,
 } from 'lucide-react';
 import { getXpRequiredForNextLevel, ATTRIBUTE_METADATA } from '@/lib/rpg-engine';
 import { CharacterVisual, getEvolutionStage } from './CharacterVisual';
@@ -50,6 +51,7 @@ interface HeroCardProps {
   onOpenAvatarVault?: () => void;
   onOpenEditProfile?: () => void;
   onShareHero?: () => void;
+  onLogout?: () => void;
 }
 
 export const HeroCard: React.FC<HeroCardProps> = ({
@@ -60,6 +62,7 @@ export const HeroCard: React.FC<HeroCardProps> = ({
   onOpenAvatarVault,
   onOpenEditProfile,
   onShareHero,
+  onLogout,
 }) => {
   const [show3DHero, setShow3DHero] = useState(true);
   const nextLevelXp = getXpRequiredForNextLevel(character.level);
@@ -178,6 +181,17 @@ export const HeroCard: React.FC<HeroCardProps> = ({
               title="Inspect Full Hero Stats & Attributes"
             >
               Inspect
+            </button>
+          )}
+
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="flex items-center justify-center space-x-1 rounded-lg py-1 px-2.5 text-[11px] font-semibold text-red-400 hover:text-red-300 hover:bg-red-950/40 border border-transparent hover:border-red-900/50 transition active:scale-95"
+              title="Sign Out of Realm"
+            >
+              <LogOut className="h-3 w-3" />
+              <span>Logout</span>
             </button>
           )}
         </div>

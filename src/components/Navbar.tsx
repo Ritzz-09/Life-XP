@@ -289,9 +289,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             {/* Utility Cluster: Audio, Theme, Logout */}
-            <div className="flex items-center space-x-1 pl-1 border-l border-slate-800/80">
-              {/* Audio Settings */}
-              <div className="relative" ref={volumeRef}>
+            <div className="flex items-center space-x-1 pl-1 border-l border-slate-800/80 shrink-0">
+              {/* Audio Settings (Desktop/Tablet) */}
+              <div className="hidden sm:block relative" ref={volumeRef}>
                 <button
                   onClick={() => setShowVolumeSlider(!showVolumeSlider)}
                   className={`flex h-8 w-8 items-center justify-center rounded-lg border transition ${
@@ -333,13 +333,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                 )}
               </div>
 
-              {/* Ambient Lo-Fi Focus Music Toggle */}
+              {/* Ambient Lo-Fi Focus Music Toggle (Desktop/Tablet) */}
               <button
                 onClick={() => {
                   const active = soundFx.toggleBgm();
                   setIsBgmOn(active);
                 }}
-                className={`flex h-8 w-8 items-center justify-center rounded-lg border transition ${
+                className={`hidden sm:flex h-8 w-8 items-center justify-center rounded-lg border transition ${
                   isBgmOn
                     ? 'border-purple-500 bg-purple-500/20 text-purple-300 ring-1 ring-purple-400 shadow-sm'
                     : theme === 'dark'
@@ -351,13 +351,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <Music className={`h-3.5 w-3.5 ${isBgmOn ? 'text-purple-400 animate-pulse' : ''}`} />
               </button>
 
-              {/* Theme Toggle */}
+              {/* Theme Toggle (Desktop/Tablet) */}
               <button
                 onClick={() => {
                   onToggleTheme();
                   soundFx.playEquip();
                 }}
-                className={`flex h-8 w-8 items-center justify-center rounded-lg border transition ${
+                className={`hidden sm:flex h-8 w-8 items-center justify-center rounded-lg border transition ${
                   theme === 'dark'
                     ? 'border-slate-800 bg-slate-900/60 text-slate-400 hover:text-slate-200'
                     : 'border-slate-300 bg-white text-slate-700'
@@ -371,13 +371,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                 )}
               </button>
 
-              {/* Logout */}
+              {/* Logout (Visible on all screens including mobile) */}
               <button
                 onClick={onLogout}
-                className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-800 bg-slate-900/60 text-slate-400 hover:border-red-900/50 hover:bg-red-950/20 hover:text-red-400 transition"
-                title="Logout"
+                className="flex h-8 w-8 items-center justify-center rounded-lg border border-red-900/40 bg-red-950/20 text-red-400 hover:border-red-800 hover:bg-red-900/40 transition active:scale-95 shrink-0"
+                title="Sign Out / Logout"
               >
-                <LogOut className="h-3.5 w-3.5" />
+                <LogOut className="h-3.5 w-3.5 text-red-400" />
               </button>
             </div>
           </div>
