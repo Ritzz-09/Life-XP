@@ -155,35 +155,8 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess, initialTab = 'LOG
 
         {/* Card */}
         <div className="rounded-3xl border border-slate-800 bg-slate-900/90 p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
-          {/* Quick Demo Access Bar */}
-          <div className="mb-6 rounded-2xl border border-amber-500/40 bg-amber-500/10 p-4 text-center">
-            <div className="flex items-center justify-center space-x-1.5 text-xs font-bold text-amber-300">
-              <Sparkles className="h-4 w-4" />
-              <span>Instant Evaluator Demo</span>
-            </div>
-            <p className="mt-1 text-[11px] text-slate-300">
-              Explore immediately with a preloaded Level 3 Hero, quests, and armory gear.
-            </p>
-            <button
-              onClick={handleDemoLogin}
-              disabled={loading}
-              className="mt-3 w-full flex items-center justify-center space-x-2 rounded-xl bg-amber-500 hover:bg-amber-400 py-2.5 text-xs font-black uppercase tracking-wider text-slate-950 shadow-md shadow-amber-500/25 transition active:scale-95 disabled:opacity-50"
-            >
-              <span>{loading ? 'Entering Realm...' : 'Enter as Demo Hero'}</span>
-              <ArrowRight className="h-4 w-4" />
-            </button>
-          </div>
-
-          <div className="relative flex py-2 items-center">
-            <div className="flex-grow border-t border-slate-800"></div>
-            <span className="flex-shrink mx-4 text-[10px] uppercase tracking-widest text-slate-500 font-bold">
-              Or Custom Hero
-            </span>
-            <div className="flex-grow border-t border-slate-800"></div>
-          </div>
-
           {/* Tab Switch - 2 Modes: Sign In & Register */}
-          <div className="mt-2 grid grid-cols-2 gap-1 rounded-xl bg-slate-950 p-1 border border-slate-800">
+          <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-950 p-1 border border-slate-800">
             <button
               type="button"
               onClick={() => { setIsLogin(true); setError(''); }}
@@ -391,6 +364,19 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess, initialTab = 'LOG
               </div>
             )}
           </form>
+
+          {/* Guest Demo preview link */}
+          <div className="mt-5 pt-4 border-t border-slate-800 text-center">
+            <button
+              type="button"
+              onClick={handleDemoLogin}
+              disabled={loading}
+              className="text-xs text-slate-400 hover:text-amber-400 transition inline-flex items-center gap-1.5 active:scale-95"
+            >
+              <span>Just exploring? Try Guest Demo Mode</span>
+              <ArrowRight className="h-3 w-3" />
+            </button>
+          </div>
         </div>
       </div>
 

@@ -1,8 +1,8 @@
-# ⚔️ Life-XP: The Gamified Discipline & Progression Web App
-### 🏆 Official Submission for Tech Zephyr 4.0 Web Hackathon (September 12–13, 2026)
+# ⚔️ Life-XP: Turn Your Life Into an RPG
+### Built for Tech Zephyr 4.0 Hackathon (September 12–13, 2026)
 
-> **Turn mundane real-world tasks into an engaging virtual progression system.**  
-> Built with Next.js 16 App Router, React 19, TypeScript, Tailwind CSS, Prisma ORM, SQLite/PostgreSQL, and pure Web Audio micro-interactions. Responsive across mobile phones, tablets, and desktop laptops.
+> **Stop procrastinating. Turn daily discipline, fitness, and study into an RPG progression system.**  
+> Built with Next.js 16 App Router, React 19, TypeScript, Tailwind CSS, Prisma ORM (SQLite / PostgreSQL), and native Web Audio synthesis. Responsive across mobile phones, tablets, and desktop.
 
 [![Next.js 16](https://img.shields.io/badge/Next.js-16.3.5-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![React 19](https://img.shields.io/badge/React-19.2.8-blue?style=for-the-badge&logo=react)](https://react.dev/)
@@ -13,47 +13,34 @@
 
 ---
 
-## 📋 Hackathon Disclosures & Compliance (Tech Zephyr 4.0)
+## 📋 Hackathon Disclosures & Compliance
 
-In strict accordance with **Tech Zephyr 4.0 Development Guidelines & Rules**:
-- **Originality & Authorship**: 100% original codebase written during the hackathon period. **Zero downloaded UI templates or pre-packaged boilerplates** were used.
-- **Third-Party Libraries & Frameworks Disclosed**:
-  - `next` (v16.3.5) & `react` (v19.2.8) - Core full-stack App Router architecture
-  - `@prisma/client` & `prisma` (v6.4.1) - Database ORM & schema management
-  - `bcryptjs` (v3.0.3) & `jsonwebtoken` (v9.0.3) - Password salting & signed session cookies
-  - `canvas-confetti` (v1.9.4) - Celebratory particle physics
-  - `lucide-react` (v1.45.0) - UI iconography
-  - `Web Audio API` (native browser) - Real-time synthesized tactile game chimes (<5ms latency, zero external MP3 assets)
-- **AI Tool Assistance Disclosed**: Developed with AI pair-programming assistance (Google DeepMind Antigravity / Gemini) for architectural scaffolding, automated test suites, and performance optimization.
-
----
-
-## 🎯 Judging Criteria Alignment Matrix
-
-| Criteria (Weight) | Implementation in Life-XP | Verification Point |
-|---|---|---|
-| **Functionality & Execution (30%)** | 41 active routes, zero broken links, full CRUD, dynamic RPG leveling mathematics, real-time boss raid damage, habit streak multipliers, and custom reward redemptions. | Run `node scripts/test-engine.mjs` (passes 100%) |
-| **Technical Implementation (30%)** | Next.js 16 Turbopack, Prisma relational database, 2FA Email OTP with cryptographic TTL and 3-attempt brute-force lockout, dual SQLite/PostgreSQL 1-click switcher, and Schema.org JSON-LD SEO. | Verified with `npm run build` (41/41 routes 0 errors) |
-| **UI / UX Design (15%)** | Dark cyberpunk fantasy aesthetic, glassmorphic HUD, dedicated 3-column desktop command center, responsive smartphone bottom dock, PWA offline installability, and light/dark theme toggles. | Fully responsive across mobile, tablet, and desktop |
-| **Innovation & Creativity (10%)** | Externalizing procrastination as a tangible World Raid Boss (`Chronicus`), micro-habit attribute affinities (STR, INT, VIT, AGI, SPR), and guilt-free real-world incentive store. | Interactive gameplay mechanics & habit stacking engine |
-| **Adherence to Theme (10%)** | Transforms daily discipline, fitness, study, and procrastination management into a compelling role-playing progression loop. | Directly solves the real-world habit retention problem |
-| **Code Quality & Conduct (5%)** | Strictly typed TypeScript, modular component architecture, sanitization against XSS/SQLi, clean git history. | Clean GitHub repository on `main` branch |
+In accordance with the **Tech Zephyr 4.0 Development Guidelines**:
+- **Original Codebase**: 100% bespoke code written during the hackathon. No pre-built website templates or downloaded UI kits were used.
+- **Third-Party Libraries & Frameworks**:
+  - `next` (v16.3.5) & `react` (v19.2.8) - Full-stack React App Router
+  - `@prisma/client` & `prisma` (v6.4.1) - Type-safe database ORM
+  - `bcryptjs` (v3.0.3) & `jsonwebtoken` (v9.0.3) - Password hashing & signed JWT auth
+  - `canvas-confetti` (v1.9.4) - Level-up celebration particle physics
+  - `lucide-react` (v1.45.0) - UI icons
+  - `Web Audio API` (native browser) - Real-time synthesized 8-bit sound chimes (<5ms latency, 0 external audio files)
+- **AI Tool Usage**: Developed with Google DeepMind Antigravity / Gemini as an AI pair-programmer for scaffolding, algorithmic leveling curves, and test scripts.
 
 ---
 
-## 🌟 1. Overview & Creative Direction
+## 💡 Why We Built Life-XP
 
-Traditional habit trackers and to-do lists feel like chores due to the **delayed gratification problem**: going to the gym, reading a book, or coding take months to show physical results. Video games solve this through **immediate feedback loops**, clear progression ladders, and tangible rewards.
+Most productivity apps fail because they treat habit tracking like an administrative chore. Going to the gym, studying data structures, or drinking enough water have **delayed feedback loops**—you don't see results for weeks or months. In contrast, games keep us engaged because every action yields immediate visual, auditory, and numerical feedback.
 
-**Life-XP** bridges this gap:
-- **Alive & Tactile**: Instant Web Audio chime feedback on task completion, celebratory level-up fanfare, and canvas particle confetti.
-- **Thematically Cohesive**: Cyber-Arcane / Dark Fantasy RPG aesthetic. Tasks are **Quests**, currency is **Gold**, character growth happens across **5 Core Attributes** (Strength, Intellect, Vitality, Agility, Spirit), and tasks deal damage to an active **World Raid Boss**.
-- **Cross-Device Responsive**: Dedicated mobile bottom dock layout for smartphones and multi-column command deck for laptops.
-- **Anti-Cheat & True Persistence**: Server-validated XP calculations, non-linear leveling mathematics, and full relational database persistence (Prisma ORM with SQLite for zero-config local runs, PostgreSQL-ready for cloud deployments).
+Life-XP brings that same psychological feedback loop to real life:
+- **Instant Audio-Tactile Feedback**: Browser-synthesized 8-bit sound effects and confetti celebrations when tasks are completed.
+- **Externalizing Procrastination**: Rather than feeling guilty about resistance, you fight **Chronicus the Procrastinator**—a boss whose health depletes with your daily tasks.
+- **Micro-Habit Stacking**: Attribute points (STR, INT, VIT, AGI, SPR) map directly to real-world self-improvement areas.
+- **Guilt-Free Rewards**: Earn in-game Gold to redeem real-life incentives you set for yourself (like gaming sessions or favorite treats).
 
 ---
 
-## 🏗️ 2. Full-Stack Architecture & Tech Stack
+## 🏗️ Architecture & Tech Stack
 
 ```
 +---------------------------------------------------------------------------------------+
@@ -61,11 +48,10 @@ Traditional habit trackers and to-do lists feel like chores due to the **delayed
 +---------------------------------------------------------------------------------------+
 |                                                                                       |
 |  [ Client Layer ]                                                                     |
-|  - Framework: Next.js 16 (App Router, React 19, TypeScript)                           |
-|  - Styling: Tailwind CSS Dark Fantasy & Cyberpunk palette                             |
-|  - Audio Engine: Synthesized Web Audio API (zero external assets, <5ms latency)       |
-|  - FX: Canvas Confetti particle explosions                                            |
-|  - Navigation: Multi-column Command Center (Laptop) & Tactile Bottom Dock (Mobile)    |
+|  - Next.js 16 (App Router, React 19, TypeScript)                                      |
+|  - Tailwind CSS Dark Fantasy & Cyberpunk palette                                      |
+|  - Web Audio API (Synthesized chimes, <5ms latency, 0 external audio assets)          |
+|  - Responsive Desktop HUD (3-column deck) & Mobile Viewport (Tactile bottom dock)     |
 |                                                                                       |
 |                                 HTTP / REST API                                       |
 |                                        v                                              |
@@ -89,28 +75,27 @@ Traditional habit trackers and to-do lists feel like chores due to the **delayed
 
 ---
 
-## 🎮 3. Core Features & Mechanics
+## 🎮 Core Features & Mechanics
 
-### 🛡️ User Authentication & Security
+### 🛡️ Authentication & Account Security
 - **Email OTP Verification**: Cryptographic 6-digit confirmation codes with 5-minute TTL and 3-attempt brute-force lockout.
-- **Secure Password Auth**: Salted hashing with `bcryptjs` and signed HTTP-only JWT cookies.
-- **Password Recovery**: Self-service encrypted reset token recovery flow.
+- **Password Security**: Salted hashing with `bcryptjs` and signed HTTP-only JWT cookies.
+- **Guest Demo Mode**: One-click preview account to explore Level 3 Hero mechanics immediately.
 
-### 📐 Relational Database Schema & Full CRUD
+### 📐 Quest Engine & Full CRUD
 - **Create**: Forge custom quests with Title, Description, Type (Daily, Habit, To-Do, Boss), Difficulty, Attribute, and Due Date.
-- **Read**: Dynamic filtering by Type, Attribute (STR, INT, VIT, AGI, SPR), and instant text search.
-- **Update**: Edit quest properties, toggle statuses.
-- **Delete**: Abandon quests with 1-click removal.
+- **Filter & Search**: Dynamic filtering by Type, Attribute (STR, INT, VIT, AGI, SPR), and instant text search.
+- **Edit & Abandon**: Full editing and 1-click abandon support.
 
-### ⚡ The Non-Linear RPG Progression Engine
-- Non-linear leveling curve where each subsequent level demands more effort:
+### ⚡ Non-Linear RPG Progression Engine
+- Character progression governed by an exponential curve:
   $$\text{XP Required for Level } L = \lfloor 100 \times L^{1.5} \rfloor$$
   - Level 1 → 2: 100 XP
   - Level 2 → 3: 282 XP
   - Level 3 → 4: 519 XP
   - Level 4 → 5: 800 XP
   - Level 10: 3,162 XP
-- Full HP restoration upon level-up and unlockable celebratory modal.
+- Full HP restoration upon level-up with audio-visual celebration fanfare.
 
 ### 📊 5 Core Character Attributes
 1. **STR (Strength)**: Gym, strength training, physical stamina.
@@ -120,36 +105,35 @@ Traditional habit trackers and to-do lists feel like chores due to the **delayed
 5. **SPR (Spirit)**: Meditation, mindfulness, reflection.
 
 ### 🔥 Consecutive Streak System
-- Tracks daily activity with local date normalization.
 - Consecutive days grant a **Streak Multiplier**: $+5\%$ reward bonus per consecutive day up to $+50\%$ at 10 days.
 - Visual **28-Day Discipline Heatmap** demonstrating database log persistence.
 
-### 💰 Virtual Economy, Armory & Custom Rewards
+### 💰 Virtual Economy & Custom Real-World Rewards
 - Earn **Gold** by completing quests.
-- Visit the **Merchant Armory** to purchase weapons, armor, elixirs, and badges.
-- **Custom Real-World Rewards**: Create your own rewards (e.g. coffee, video games) and redeem hard-earned gold guilt-free.
+- Visit the **Merchant Armory** to purchase weapons, armor, elixirs, and cosmetic badges.
+- **Custom Rewards**: Set your own real-world rewards (e.g. coffee, gaming session) and spend your hard-earned gold guilt-free.
 
 ### 🐉 World Raid Boss: Chronicus the Procrastinator
 - High-stakes world raid boss with real-time health bar.
-- Every quest completed deals damage to the boss with a **1.5x Critical Weakness Bonus**.
+- Completing quests inflicts damage to the boss with a **1.5x Critical Weakness Bonus** when using the boss's current weakness attribute.
 
 ---
 
-## 📱 4. Responsive Design & Public Pages
+## 📱 Responsive Design & Public Pages
 
-- **Public Landing Showcase**: High-converting hero banner, 6-card feature matrix, interactive "How It Works" 3-step guide, verified testimonials, and interactive FAQ accordion.
-- **Dedicated Content & Legal Pages**:
-  - `/about` - Guild Manifesto, origin story, and core pillars.
-  - `/faq` - Searchable, categorized knowledge base.
-  - `/contact` - Support inquiry dispatch form and Discord invite.
-  - `/privacy` - GDPR-compliant privacy policy and zero ad-tracker guarantee.
-  - `/terms` - Terms of Service and Guild Code of Conduct.
-- **Laptop / Desktop (≥ 1024px)**: 3-column command center with keyboard shortcuts (`N` to forge quest, `Esc` to dismiss).
+- **Landing Showcase**: Feature overview, 3-step onboarding preview, live Chronicus combat showcase, and interactive FAQ.
+- **Public & Legal Pages**:
+  - `/about` - The philosophy behind turning discipline into an RPG.
+  - `/faq` - Frequently asked questions about quests, XP math, and rewards.
+  - `/contact` - Direct contact and feedback channel.
+  - `/privacy` - Privacy policy and local data handling statement.
+  - `/terms` - Terms of Service and community guidelines.
+- **Desktop (≥ 1024px)**: 3-column command center with keyboard shortcuts (`N` to forge quest, `Esc` to dismiss).
 - **Mobile (< 1024px)**: Sticky Top HUD, tactile Bottom Navigation Dock, and thumb-friendly Floating Action Button (`+`).
 
 ---
 
-## 🚀 5. Quick Start & Setup Instructions
+## 🚀 Quick Start & Setup Instructions
 
 ### Prerequisites
 - Node.js 18+ (tested on Node v20/v24)
@@ -183,7 +167,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 🧪 6. Automated Full-Stack Verification
+## 🧪 Automated Full-Stack Verification
 
 Run the included automated end-to-end verification test suite:
 ```bash

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import {
   Swords,
   Shield,
@@ -13,10 +12,11 @@ import {
   Users,
   ChevronDown,
   ArrowRight,
-  CheckCircle2,
-  Star,
   Target,
   Trophy,
+  Heart,
+  Dumbbell,
+  BookOpen,
 } from 'lucide-react';
 
 interface LandingShowcaseProps {
@@ -34,44 +34,44 @@ export const LandingShowcase: React.FC<LandingShowcaseProps> = ({ onStartFree, o
   const features = [
     {
       icon: Swords,
-      title: 'Real-Life Habit Quests',
-      description: 'Turn workouts, study sessions, and daily chores into epic RPG quests. Earn XP, Gold, and build unbreakable streaks.',
+      title: 'Habit Quests & Streaks',
+      description: 'Turn workouts, study sessions, and daily chores into quests. Earn XP, Gold, and unlock streak multipliers for consistent days.',
       badge: 'Core Engine',
       color: 'from-amber-500/20 to-amber-600/5 text-amber-400 border-amber-500/30',
     },
     {
       icon: Flame,
-      title: 'Epic World Boss Battles',
-      description: 'Slay procrastination! Every quest you complete deals real-time damage to terrifying world bosses like Chronicus.',
-      badge: 'Raid Mechanics',
+      title: 'Real-Time Boss Raids',
+      description: 'Procrastination visualized as an active world boss. Every quest completed strikes the boss. Miss daily habits, and it strikes back.',
+      badge: 'Combat Mechanics',
       color: 'from-red-500/20 to-red-600/5 text-red-400 border-red-500/30',
     },
     {
       icon: Zap,
-      title: 'Talent & Skill Tree Evolution',
-      description: 'Level up your hero across Strength, Intellect, Vitality, Agility, and Spirit. Unlock passive buffs that amplify your discipline.',
+      title: 'Talent & Skill Trees',
+      description: 'Distribute stat points across Strength, Intellect, Vitality, Agility, and Spirit. Unlock passive perks that reinforce your discipline.',
       badge: 'Progression',
       color: 'from-cyan-500/20 to-cyan-600/5 text-cyan-400 border-cyan-500/30',
     },
     {
       icon: Clock,
       title: 'Hyperfocus Pomodoro Sprints',
-      description: 'Deep work timer with ambient soundscapes. Power through 25-minute sprints to claim bonus quest rewards.',
+      description: 'Built-in 25-minute deep work timer. Pair intense study or coding intervals with instant bonus XP upon completion.',
       badge: 'Productivity',
       color: 'from-purple-500/20 to-purple-600/5 text-purple-400 border-purple-500/30',
     },
     {
       icon: Award,
-      title: 'The Armory & Custom Rewards',
-      description: 'Redeem hard-earned quest gold for epic avatar gear or real-life rewards like coffee, gaming time, and cheat meals.',
-      badge: 'Economy',
+      title: 'Armory & Custom Rewards',
+      description: 'Create your own real-life rewards (coffee, 1h gaming, cheat meal) and purchase them with gold earned from genuine discipline.',
+      badge: 'Incentive Store',
       color: 'from-emerald-500/20 to-emerald-600/5 text-emerald-400 border-emerald-500/30',
     },
     {
       icon: Users,
-      title: 'Guild Parties & Co-Op Raids',
-      description: 'Form accountability alliances with real friends. Share quest logs, cheer streaks, and slay raid bosses as a party.',
-      badge: 'Community',
+      title: 'Co-Op Guild Parties',
+      description: 'Team up with friends using simple invite codes. Share habit logs, support each other’s streaks, and take down bosses together.',
+      badge: 'Accountability',
       color: 'from-blue-500/20 to-blue-600/5 text-blue-400 border-blue-500/30',
     },
   ];
@@ -79,91 +79,66 @@ export const LandingShowcase: React.FC<LandingShowcaseProps> = ({ onStartFree, o
   const steps = [
     {
       step: '01',
-      title: 'Define Your Daily Quests',
-      description: 'Set up your daily habits (exercise, coding, reading, water) with difficulty ratings and attribute affinities.',
+      title: 'Create Your Habit Quests',
+      description: 'Add your real goals—like "30 min gym", "Study algorithms", or "Drink 2L water"—with difficulty and stat tags.',
     },
     {
       step: '02',
       title: 'Complete Tasks & Strike Bosses',
-      description: 'Check off quests in real-time. Hear satisfying coin and victory fanfares as your hero gains XP and deals raid damage.',
+      description: 'Check off quests to trigger tactile Web Audio chimes, celebratory confetti, XP boosts, and direct damage on the raid boss.',
     },
     {
       step: '03',
-      title: 'Evolve into a Legendary Hero',
-      description: 'Level up, unlock talent tree perks, equip rare armory gear, and watch your real-life productivity transform.',
-    },
-  ];
-
-  const testimonials = [
-    {
-      quote: 'Life-XP completely cured my procrastination. Turning my workout routines into boss raid damage makes skipping the gym feel impossible.',
-      author: 'Marcus Vance',
-      role: 'Software Architect & Level 14 Paladin',
-      rating: 5,
-    },
-    {
-      quote: 'The talent tree and gold rewards system makes daily study habits feel like playing an addictive RPG, except my grades actually improved.',
-      author: 'Elena Rostova',
-      role: 'Medical Student & Level 11 Mage',
-      rating: 5,
-    },
-    {
-      quote: 'The co-op party system is pure genius. Our team holds each other accountable daily, and we take down weekly bosses together.',
-      author: 'David Chen',
-      role: 'Startup Founder & Level 19 Warrior',
-      rating: 5,
+      title: 'Level Up & Claim Real Rewards',
+      description: 'Unlock talent tree skills, upgrade armor, and spend earned gold on real-life treats you defined yourself.',
     },
   ];
 
   const faqs = [
     {
-      q: 'What is Life-XP and how does it work?',
-      a: 'Life-XP is a gamified productivity web app that converts your real-world habits, study, fitness, and work goals into an RPG. Completing real tasks rewards your hero with XP, Gold, Streak bonuses, and attacks world bosses.',
+      q: 'How does Life-XP actually help with procrastination?',
+      a: 'Most habit apps fail because real-world goals (like working out or studying) have delayed rewards—it takes months to see results. Life-XP introduces immediate feedback loops: every completed task immediately gives you XP, gold, audio cues, and boss damage, making discipline feel satisfying in real time.',
     },
     {
-      q: 'Is Life-XP free to play?',
-      a: 'Yes! Life-XP is 100% free with full access to habit quests, level progression, boss raids, skill trees, and custom rewards. There are zero pay-to-win barriers or ad interruptions.',
+      q: 'Is Life-XP completely free?',
+      a: 'Yes, 100% free and open-source. There are no paywalls, subscriptions, or intrusive ads. All features—quests, boss battles, skill trees, and party raids—are completely unlocked.',
     },
     {
-      q: 'Does it work seamlessly on mobile phones and tablets?',
-      a: 'Absolutely. Life-XP is fully responsive and installable as a Progressive Web App (PWA). You can pin it directly to your iOS or Android home screen with instant offline capability.',
+      q: 'Can I install this on my smartphone?',
+      a: 'Yes! Life-XP is built as a Progressive Web App (PWA). You can tap "Add to Home Screen" on iOS Safari or Android Chrome to use it just like a native mobile app with tactile navigation.',
     },
     {
-      q: 'How does Email OTP Verification protect my account?',
-      a: 'During registration, a secure 6-digit cryptographic confirmation code is sent to your email to verify authenticity, preventing spam accounts and ensuring your hero data stays safe.',
+      q: 'What is the custom reward system?',
+      a: 'You can create your own real-life guilt-free rewards (like "1 hour of gaming" or "Specialty coffee") and set a gold price. You can only buy them once you earn enough gold by finishing your real-world tasks.',
     },
     {
-      q: 'Can I try it before creating an account?',
-      a: 'Yes! Click "Instant Demo Hero" to immediately explore the realm with a pre-configured Level 3 hero, active quests, and inventory without registering.',
-    },
-    {
-      q: 'What happens if I miss a daily habit quest?',
-      a: 'World bosses counterattack during the Dawn Reset if daily quests are missed! Consistency shields your HP, maintaining your hard-earned streak and guild reputation.',
+      q: 'How does the boss battle work?',
+      a: 'Every quest you complete deals damage to Chronicus the Procrastinator. Matching your task to the boss’s weakness (like doing an Intellect task when the boss is weak to Intellect) scores a 1.5x critical strike. Defeating the boss drops a loot chest!',
     },
   ];
 
   return (
     <div className="w-full text-slate-100">
       {/* Hero Section */}
-      <section className="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-28">
+      <section className="relative overflow-hidden pt-12 pb-16 md:pt-20 md:pb-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          {/* Hero Badge */}
-          <div className="inline-flex items-center space-x-2 rounded-full border border-amber-500/40 bg-amber-500/10 px-4 py-1.5 text-xs font-bold text-amber-300 backdrop-blur-md mb-6 animate-fade-in">
+          {/* Badge */}
+          <div className="inline-flex items-center space-x-2 rounded-full border border-amber-500/40 bg-amber-500/10 px-4 py-1.5 text-xs font-bold text-amber-300 backdrop-blur-md mb-6">
             <Sparkles className="h-3.5 w-3.5 text-amber-400" />
-            <span>The Next-Gen Gamified Habit RPG</span>
+            <span>Tech Zephyr 4.0 Hackathon Project</span>
           </div>
 
           {/* Main Headline */}
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-white max-w-4xl mx-auto leading-tight sm:leading-none">
-            Transform Your Daily Routine Into{' '}
+            Stop Procrastinating.{' '}
             <span className="bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-transparent">
-              Legendary Virtual Power
+              Turn Your Life Into an RPG.
             </span>
           </h1>
 
           {/* Subtitle */}
           <p className="mt-5 text-sm sm:text-base md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            Turn fitness, study, and daily discipline into an epic quest. Slay procrastination bosses, unlock skill trees, and level up your real life with thousands of adventurers.
+            Most habit trackers feel like boring spreadsheets. Life-XP turns your workouts, study sessions, and daily habits into a game—complete tasks, earn gold, level up your hero, and defeat bosses.
           </p>
 
           {/* Dual CTAs */}
@@ -172,7 +147,7 @@ export const LandingShowcase: React.FC<LandingShowcaseProps> = ({ onStartFree, o
               onClick={onStartFree}
               className="w-full sm:w-auto flex items-center justify-center space-x-2 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 px-8 py-3.5 text-sm font-black uppercase tracking-wider text-slate-950 shadow-xl shadow-amber-500/25 hover:brightness-110 active:scale-95 transition"
             >
-              <span>Start Your Quest Free</span>
+              <span>Start Playing Free</span>
               <ArrowRight className="h-4 w-4" />
             </button>
             <button
@@ -180,27 +155,27 @@ export const LandingShowcase: React.FC<LandingShowcaseProps> = ({ onStartFree, o
               className="w-full sm:w-auto flex items-center justify-center space-x-2 rounded-2xl border border-slate-700 bg-slate-900/90 px-6 py-3.5 text-sm font-bold text-slate-200 hover:border-amber-400 hover:text-white transition"
             >
               <Sparkles className="h-4 w-4 text-amber-400" />
-              <span>Instant Demo Hero</span>
+              <span>Try Demo Hero</span>
             </button>
           </div>
 
-          {/* Trust Social Proof Metrics */}
+          {/* Genuine Project Highlights */}
           <div className="mt-10 flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-xs text-slate-400">
             <div className="flex items-center space-x-1.5">
-              <div className="flex text-amber-400">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                ))}
-              </div>
-              <span className="font-bold text-slate-200">4.9/5 Rating</span>
+              <Sparkles className="h-4 w-4 text-amber-400" />
+              <span className="font-semibold text-slate-200">100% Free & Open Source</span>
             </div>
             <div className="flex items-center space-x-1.5">
-              <Users className="h-4 w-4 text-cyan-400" />
-              <span><strong className="text-slate-200">12,000+</strong> Adventurers Active</span>
+              <Zap className="h-4 w-4 text-cyan-400" />
+              <span>5 Core RPG Attributes</span>
+            </div>
+            <div className="flex items-center space-x-1.5">
+              <Flame className="h-4 w-4 text-red-400" />
+              <span>Real-Time Boss Combat</span>
             </div>
             <div className="flex items-center space-x-1.5">
               <Shield className="h-4 w-4 text-emerald-400" />
-              <span>Zero Ads · 100% Free to Play</span>
+              <span>Zero Ads & Privacy First</span>
             </div>
           </div>
         </div>
@@ -210,10 +185,10 @@ export const LandingShowcase: React.FC<LandingShowcaseProps> = ({ onStartFree, o
       <section id="features" className="py-16 border-t border-slate-900 bg-slate-950/60">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-amber-400 mb-2">Epic Capabilities</h2>
-            <p className="text-2xl sm:text-3xl font-black text-white">Built for Champions of Self-Mastery</p>
+            <h2 className="text-xs font-bold uppercase tracking-widest text-amber-400 mb-2">Game Mechanics</h2>
+            <p className="text-2xl sm:text-3xl font-black text-white">Built to Make Consistency Addictive</p>
             <p className="mt-2 text-xs sm:text-sm text-slate-400">
-              Every tool you need to replace procrastination with irresistible positive feedback loops.
+              Replace boredom and friction with instant rewards, leveling fanfares, and clear progression ladders.
             </p>
           </div>
 
@@ -244,12 +219,61 @@ export const LandingShowcase: React.FC<LandingShowcaseProps> = ({ onStartFree, o
         </div>
       </section>
 
+      {/* Boss Raid Showcase (Replaced fake testimonials with actual game combat showcase) */}
+      <section className="py-16 border-t border-slate-900 bg-slate-900/30">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <div className="rounded-3xl border border-red-500/30 bg-slate-900/90 p-8 sm:p-10 backdrop-blur-xl relative overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              <div>
+                <div className="inline-flex items-center space-x-2 rounded-full border border-red-500/40 bg-red-500/10 px-3 py-1 text-xs font-bold text-red-300 mb-4">
+                  <Flame className="h-3.5 w-3.5 text-red-400" />
+                  <span>The Anti-Procrastination Mechanic</span>
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-black text-white">
+                  Meet Chronicus: The Procrastination Dragon
+                </h3>
+                <p className="mt-3 text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  In Life-XP, resistance isn't just an internal struggle—it has a health bar. Every workout, study session, or chore deals active damage to the boss.
+                </p>
+                <div className="mt-5 space-y-2 text-xs text-slate-300">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-amber-400 font-bold">⚡ Weakness Multiplier:</span>
+                    <span>Matching task attributes deals 1.5x Critical Damage</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-red-400 font-bold">⚠️ Dawn Penalty:</span>
+                    <span>Missed daily habits deal damage back to your hero</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-emerald-400 font-bold">🎁 Loot Chests:</span>
+                    <span>Slaying the boss unlocks rare armory gear and gold</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-800 bg-slate-950/80 p-6 text-center">
+                <div className="text-4xl mb-2">🐉</div>
+                <h4 className="text-base font-black text-red-400">Chronicus the Procrastinator</h4>
+                <p className="text-[11px] text-slate-400 mb-4">World Raid Boss · Weakness: Intellect</p>
+                <div className="w-full bg-slate-800 rounded-full h-3 mb-2 overflow-hidden">
+                  <div className="bg-gradient-to-r from-red-600 to-amber-500 h-full w-[65%]" />
+                </div>
+                <div className="flex justify-between text-[11px] text-slate-400 font-mono">
+                  <span>HP: 1,300 / 2,000</span>
+                  <span className="text-red-400 font-bold">65%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* How It Works */}
       <section id="how-it-works" className="py-16 border-t border-slate-900">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-cyan-400 mb-2">The Habit Stacking Engine</h2>
-            <p className="text-2xl sm:text-3xl font-black text-white">How Life-XP Rewires Your Habits</p>
+            <h2 className="text-xs font-bold uppercase tracking-widest text-cyan-400 mb-2">The Habit Loop</h2>
+            <p className="text-2xl sm:text-3xl font-black text-white">How It Works in 3 Steps</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -269,43 +293,11 @@ export const LandingShowcase: React.FC<LandingShowcaseProps> = ({ onStartFree, o
         </div>
       </section>
 
-      {/* Social Proof / Testimonials */}
-      <section className="py-16 border-t border-slate-900 bg-slate-950/40">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-amber-400 mb-2">Guild Dispatches</h2>
-            <p className="text-2xl sm:text-3xl font-black text-white">Loved by High-Performance Adventurers</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((t, idx) => (
-              <div
-                key={idx}
-                className="rounded-3xl border border-slate-800 bg-slate-900/80 p-6 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex text-amber-400 mb-3">
-                    {[...Array(t.rating)].map((_, i) => (
-                      <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                    ))}
-                  </div>
-                  <p className="text-xs leading-relaxed text-slate-300 italic mb-4">"{t.quote}"</p>
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-white">{t.author}</h4>
-                  <p className="text-[11px] text-amber-400/90">{t.role}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* FAQ Section */}
       <section id="faq" className="py-16 border-t border-slate-900">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-cyan-400 mb-2">Need Clarity?</h2>
+            <h2 className="text-xs font-bold uppercase tracking-widest text-cyan-400 mb-2">Got Questions?</h2>
             <p className="text-2xl sm:text-3xl font-black text-white">Frequently Asked Questions</p>
           </div>
 
@@ -330,7 +322,7 @@ export const LandingShowcase: React.FC<LandingShowcaseProps> = ({ onStartFree, o
                     />
                   </button>
                   {isOpen && (
-                    <div className="px-4 pb-4 sm:px-5 sm:pb-5 text-xs text-slate-400 leading-relaxed border-t border-slate-800/60 pt-3">
+                    <div className="px-4 pb-4 sm:px-5 sm:pb-5 text-xs text-slate-300 leading-relaxed border-t border-slate-800/60 pt-3">
                       {faq.a}
                     </div>
                   )}
@@ -343,11 +335,11 @@ export const LandingShowcase: React.FC<LandingShowcaseProps> = ({ onStartFree, o
 
       {/* Final Conversion Banner */}
       <section className="py-16 border-t border-slate-900">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <div className="rounded-3xl border border-amber-500/40 bg-gradient-to-b from-amber-500/15 via-slate-900 to-slate-950 p-8 sm:p-12 text-center relative overflow-hidden shadow-2xl">
-            <h2 className="text-2xl sm:text-4xl font-black text-white">Ready to Forge Your Legend?</h2>
+            <h2 className="text-2xl sm:text-4xl font-black text-white">Start Leveling Up Your Life</h2>
             <p className="mt-3 text-xs sm:text-sm text-slate-300 max-w-xl mx-auto">
-              Join over 12,000 heroes turning mundane routines into unstoppable momentum. Free to play, zero credit cards required.
+              Build habits that actually stick through instant game rewards. Free to play, zero credit cards required.
             </p>
             <div className="mt-6 flex flex-col sm:flex-row justify-center gap-3">
               <button

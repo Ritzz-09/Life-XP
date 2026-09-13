@@ -75,16 +75,16 @@ export default function AboutPage() {
 
         {/* CTA section */}
         <section className="py-16 text-center px-4 max-w-xl mx-auto">
-          <h2 className="text-2xl font-black text-white">Join 12,000+ Fellow Adventurers</h2>
+          <h2 className="text-2xl font-black text-white">Ready to Turn Discipline Into an Adventure?</h2>
           <p className="mt-2 text-xs text-slate-400">
-            Begin with a single habit quest today and experience real-world leveling up.
+            Create your character in under a minute and start tracking your first real-world quest.
           </p>
           <div className="mt-6 flex justify-center gap-3">
             <Link
               href="/register"
               className="rounded-xl bg-amber-500 px-6 py-3 text-xs font-black uppercase tracking-wider text-slate-950 shadow-lg shadow-amber-500/20 hover:brightness-110 transition"
             >
-              Embark Free
+              Start Free Questing
             </Link>
             <Link
               href="/"
