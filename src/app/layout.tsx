@@ -22,7 +22,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Life RPG | Gamified Real-Life Habit Tracker & Superhero Evolution",
+  title: "Life-XP | Gamified Real-Life Habit Tracker & Superhero Evolution",
   description: "Turn your daily routines, fitness, and goals into an epic RPG adventure with 3D superheroes, co-op raids, talent trees, and focus timers.",
   manifest: "/manifest.json",
   icons: {
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "LifeRPG",
+    title: "Life-XP",
   },
 };
 

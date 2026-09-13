@@ -5,6 +5,8 @@ import { Shield, Sparkles, Sword, Flame, Lock, Mail, User, ArrowRight, CheckCirc
 import { soundFx } from '@/lib/sound-fx';
 import { CharacterVisual } from './CharacterVisual';
 import { GamerAvatar } from './GamerAvatar';
+import { BrandLogo } from './BrandLogo';
+import { ForgotPasswordModal } from './ForgotPasswordModal';
 
 interface AuthViewProps {
   onSuccess: (data: any) => void;
@@ -20,6 +22,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess }) => {
   const [gender, setGender] = useState<'MALE' | 'FEMALE' | 'NON_BINARY'>('MALE');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
 
   const starterAvatars = [
     { key: 'crimson-avenger', label: 'Avenger', sub: 'Superhero' },
@@ -82,15 +85,10 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess }) => {
       <div className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-blue-600/15 blur-[120px] pointer-events-none" />
 
       <div className="w-full max-w-md relative z-10">
-        {/* Realm Emblem */}
-        <div className="text-center mb-6">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-300 shadow-xl shadow-amber-500/20 ring-2 ring-amber-400/40 float-slow">
-            <Shield className="h-8 w-8 text-slate-950" />
-          </div>
-          <h1 className="mt-4 text-3xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-500">
-            LIFE RPG
-          </h1>
-          <p className="mt-1 text-xs sm:text-sm text-slate-400">
+        {/* Realm Emblem & Brand Logo */}
+        <div className="text-center mb-6 flex flex-col items-center">
+          <BrandLogo size="lg" className="justify-center" />
+          <p className="mt-2 text-xs sm:text-sm text-slate-400 text-center max-w-xs">
             Turn your daily discipline into legendary virtual power.
           </p>
         </div>
@@ -205,6 +203,17 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess }) => {
                   className="w-full rounded-xl border border-slate-700 bg-slate-950 pl-10 pr-4 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:border-amber-400 focus:outline-none"
                 />
               </div>
+              {isLogin && (
+                <div className="mt-1.5 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setForgotPasswordOpen(true)}
+                    className="text-[11px] font-medium text-amber-400/90 hover:text-amber-300 transition hover:underline"
+                  >
+                    Forgot Master Password?
+                  </button>
+                </div>
+              )}
             </div>
 
             {!isLogin && (
@@ -295,6 +304,15 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess }) => {
           </form>
         </div>
       </div>
+
+      {/* Forgot Password Recovery Modal */}
+      <ForgotPasswordModal
+        isOpen={forgotPasswordOpen}
+        onClose={() => setForgotPasswordOpen(false)}
+        onPasswordResetSuccess={() => {
+          setIsLogin(true);
+        }}
+      />
     </div>
   );
 };

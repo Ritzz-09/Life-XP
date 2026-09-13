@@ -23,6 +23,7 @@ import {
 import { soundFx } from '@/lib/sound-fx';
 import { CharacterVisual } from './CharacterVisual';
 import { GamerAvatar } from './GamerAvatar';
+import { BrandLogo } from './BrandLogo';
 
 interface NavbarProps {
   user: {
@@ -137,15 +138,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <div>
             <div className="flex items-center space-x-2">
-              <span
-                className={`font-black tracking-wider text-transparent bg-clip-text text-lg ${
-                  theme === 'dark'
-                    ? 'bg-gradient-to-r from-amber-200 via-amber-400 to-amber-500'
-                    : 'bg-gradient-to-r from-amber-700 via-slate-800 to-slate-950'
-                }`}
-              >
-                LIFE RPG
-              </span>
+              <BrandLogo size="sm" />
               <span
                 className={`hidden rounded-full border px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase sm:inline-block ${
                   theme === 'dark'

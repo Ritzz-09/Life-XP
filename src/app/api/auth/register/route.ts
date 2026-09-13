@@ -3,10 +3,26 @@ import prisma from '@/lib/prisma';
 import { hashPassword, signToken, AUTH_COOKIE_NAME } from '@/lib/auth';
 import { ensureSeedData } from '@/lib/ensure-seed';
 import { STARTER_QUESTS } from '@/lib/seed-data';
+import { rateLimiter, getClientIp } from '@/lib/rate-limiter';
 
 export async function POST(req: Request) {
   try {
     await ensureSeedData();
+
+    const clientIp = getClientIp(req);
+    const rateCheck = rateLimiter.check(`register:${clientIp}`, 4, 30 * 60 * 1000); // 4 registrations per 30 mins per IP
+
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        {
+          error: `Registration limit reached for this network. Please wait ${rateCheck.resetInSeconds}s before attempting again.`,
+        },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(rateCheck.resetInSeconds) },
+        }
+      );
+    }
 
     const body = await req.json();
     const { username, email, password, avatar = 'warrior', gender = 'MALE' } = body;
@@ -15,8 +31,24 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Username, email, and password are required' }, { status: 400 });
     }
 
-    if (password.length < 6) {
-      return NextResponse.json({ error: 'Password must be at least 6 characters' }, { status: 400 });
+    // Input sanitization & validation for security pentest
+    const trimmedUsername = username.trim();
+    if (trimmedUsername.length < 3 || trimmedUsername.length > 24) {
+      return NextResponse.json({ error: 'Username must be between 3 and 24 characters' }, { status: 400 });
+    }
+
+    const usernameRegex = /^[a-zA-Z0-9_-]+$/;
+    if (!usernameRegex.test(trimmedUsername)) {
+      return NextResponse.json({ error: 'Username can only contain letters, numbers, hyphens, and underscores' }, { status: 400 });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json({ error: 'Please provide a valid email address' }, { status: 400 });
+    }
+
+    if (password.length < 8) {
+      return NextResponse.json({ error: 'Password must be at least 8 characters for account security' }, { status: 400 });
     }
 
     const existingUser = await prisma.user.findUnique({

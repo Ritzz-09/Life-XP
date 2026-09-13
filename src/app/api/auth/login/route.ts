@@ -2,10 +2,28 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { verifyPassword, signToken, AUTH_COOKIE_NAME } from '@/lib/auth';
 import { ensureSeedData } from '@/lib/ensure-seed';
+import { rateLimiter, getClientIp } from '@/lib/rate-limiter';
 
 export async function POST(req: Request) {
   try {
     await ensureSeedData();
+
+    const clientIp = getClientIp(req);
+    const rateCheck = rateLimiter.check(`login:${clientIp}`, 5, 15 * 60 * 1000);
+
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        {
+          error: `Too many login attempts from this realm. Defense shields activated. Please wait ${rateCheck.resetInSeconds}s before retrying.`,
+        },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(rateCheck.resetInSeconds),
+          },
+        }
+      );
+    }
 
     const body = await req.json();
     const { identifier, password } = body; // identifier can be email or username
@@ -34,6 +52,9 @@ export async function POST(req: Request) {
     if (!isMatch) {
       return NextResponse.json({ error: 'Invalid password. Check your key, adventurer.' }, { status: 401 });
     }
+
+    // Reset rate limiter on successful authentication
+    rateLimiter.reset(`login:${clientIp}`);
 
     const token = signToken({
       userId: user.id,
