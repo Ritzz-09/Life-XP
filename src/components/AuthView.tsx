@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Shield, Sparkles, Sword, Flame, Lock, Mail, User, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { soundFx } from '@/lib/sound-fx';
 import { CharacterVisual } from './CharacterVisual';
@@ -11,10 +11,11 @@ import { OtpVerificationModal } from './OtpVerificationModal';
 
 interface AuthViewProps {
   onSuccess: (data: any) => void;
+  initialTab?: 'LOGIN' | 'REGISTER';
 }
 
-export const AuthView: React.FC<AuthViewProps> = ({ onSuccess }) => {
-  const [isLogin, setIsLogin] = useState(true);
+export const AuthView: React.FC<AuthViewProps> = ({ onSuccess, initialTab = 'LOGIN' }) => {
+  const [isLogin, setIsLogin] = useState(initialTab === 'LOGIN');
   const [username, setUsername] = useState('');
   const [identifier, setIdentifier] = useState('');
   const [email, setEmail] = useState('');
@@ -27,6 +28,18 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess }) => {
   const [otpModalOpen, setOtpModalOpen] = useState(false);
   const [otpEmail, setOtpEmail] = useState('');
   const [devCode, setDevCode] = useState('');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get('tab') || params.get('mode');
+      if (tab === 'register' || tab === 'signup' || tab === 'join') {
+        setIsLogin(false);
+      } else if (tab === 'login' || tab === 'signin') {
+        setIsLogin(true);
+      }
+    }
+  }, []);
 
   const starterAvatars = [
     { key: 'crimson-avenger', label: 'Avenger', sub: 'Superhero' },
@@ -169,7 +182,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess }) => {
             <div className="flex-grow border-t border-slate-800"></div>
           </div>
 
-          {/* Tab Switch - 2 Modes: Sign In & Join Guild */}
+          {/* Tab Switch - 2 Modes: Sign In & Register */}
           <div className="mt-2 grid grid-cols-2 gap-1 rounded-xl bg-slate-950 p-1 border border-slate-800">
             <button
               type="button"
@@ -187,7 +200,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess }) => {
                 !isLogin ? 'bg-amber-500 text-slate-950 shadow' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              Join Guild
+              Register / Create Hero
             </button>
           </div>
 
@@ -348,6 +361,35 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess }) => {
                 ? 'Enter Realm'
                 : 'Embark on Journey (Verify via Email OTP)'}
             </button>
+
+            {/* Clear Callout for First-Time Users vs Returning Heroes */}
+            {isLogin ? (
+              <div className="pt-2 text-center">
+                <p className="text-xs text-slate-400">
+                  First time playing Life-XP?{' '}
+                  <button
+                    type="button"
+                    onClick={() => { setIsLogin(false); setError(''); }}
+                    className="font-bold text-amber-400 hover:text-amber-300 underline underline-offset-2 transition"
+                  >
+                    Create a New Account & Register →
+                  </button>
+                </p>
+              </div>
+            ) : (
+              <div className="pt-2 text-center">
+                <p className="text-xs text-slate-400">
+                  Already have a registered hero?{' '}
+                  <button
+                    type="button"
+                    onClick={() => { setIsLogin(true); setError(''); }}
+                    className="font-bold text-amber-400 hover:text-amber-300 underline underline-offset-2 transition"
+                  >
+                    Sign In to your account →
+                  </button>
+                </p>
+              </div>
+            )}
           </form>
         </div>
       </div>
