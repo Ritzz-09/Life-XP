@@ -74,9 +74,9 @@ export default function ContactPage() {
                   <Sparkles className="h-5 w-5" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-white">Built for Tech Zephyr 4.0</h4>
+                  <h4 className="text-xs font-bold text-white">Continuous Development</h4>
                   <p className="text-[11px] text-slate-400 mt-1">
-                    Developed as a high-performance, full-stack RPG productivity platform. We welcome evaluations and technical feedback!
+                    Life-XP is actively developed as an open productivity platform. We love hearing your feedback and ideas!
                   </p>
                 </div>
               </div>

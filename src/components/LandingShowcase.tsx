@@ -122,12 +122,6 @@ export const LandingShowcase: React.FC<LandingShowcaseProps> = ({ onStartFree, o
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-12 pb-16 md:pt-20 md:pb-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          {/* Badge */}
-          <div className="inline-flex items-center space-x-2 rounded-full border border-amber-500/40 bg-amber-500/10 px-4 py-1.5 text-xs font-bold text-amber-300 backdrop-blur-md mb-6">
-            <Sparkles className="h-3.5 w-3.5 text-amber-400" />
-            <span>Tech Zephyr 4.0 Hackathon Project</span>
-          </div>
-
           {/* Main Headline */}
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-white max-w-4xl mx-auto leading-tight sm:leading-none">
             Stop Procrastinating.{' '}
