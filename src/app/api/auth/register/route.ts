@@ -32,8 +32,24 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Username, email, and password are required' }, { status: 400 });
     }
 
+    if (!otpCode) {
+      return NextResponse.json(
+        { error: 'Email verification code is required. Please check your inbox.' },
+        { status: 400 }
+      );
+    }
+
     const trimmedUsername = username.trim();
     const normalizedEmail = email.toLowerCase().trim();
+
+    // Verify OTP code
+    const otpValidation = verifyOtp(normalizedEmail, otpCode);
+    if (!otpValidation.success) {
+      return NextResponse.json(
+        { error: otpValidation.error || 'Invalid or expired verification code' },
+        { status: 400 }
+      );
+    }
 
     const existingUser = await prisma.user.findUnique({
       where: { email: normalizedEmail },

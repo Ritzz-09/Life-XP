@@ -92,7 +92,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess, initialTab = 'LOG
         setLoading(false);
       }
     } else {
-      // Registration: dispatch OTP to verify email first
+      // Registration: dispatch real OTP via Gmail SMTP and open verification modal
       if (username.trim().length < 3) {
         setError('Hero Name must be between 3 and 24 characters');
         setLoading(false);
@@ -110,27 +110,27 @@ export const AuthView: React.FC<AuthViewProps> = ({ onSuccess, initialTab = 'LOG
       }
 
       try {
-        const res = await fetch('/api/auth/register', {
+        const res = await fetch('/api/auth/register/send-otp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             username: username.trim(),
-            email: email.trim(),
+            email: email.trim().toLowerCase(),
             password,
-            avatar,
-            gender,
           }),
         });
 
         const data = await res.json();
         if (!res.ok) {
-          throw new Error(data.error || 'Registration failed');
+          throw new Error(data.error || 'Failed to dispatch confirmation code');
         }
 
         soundFx.playCoin();
-        onSuccess(data);
+        setOtpEmail(email.trim().toLowerCase());
+        setDevCode(data.devCode || '');
+        setOtpModalOpen(true);
       } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : 'Registration failed');
+        setError(err instanceof Error ? err.message : 'Registration dispatch failed');
         soundFx.playHurt();
       } finally {
         setLoading(false);
