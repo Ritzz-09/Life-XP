@@ -111,6 +111,7 @@ export default function Home() {
   const [partyHubOpen, setPartyHubOpen] = useState(false);
   const [autoForgeOpen, setAutoForgeOpen] = useState(false);
   const [shareHeroOpen, setShareHeroOpen] = useState(false);
+  const [mobileHubOpen, setMobileHubOpen] = useState(false);
   const [readyAchievementsCount, setReadyAchievementsCount] = useState(0);
 
   const fetchAchievementsBadge = useCallback(async () => {
@@ -351,7 +352,7 @@ export default function Home() {
   const pendingCount = quests.filter((q) => !q.isCompleted).length;
 
   return (
-    <div className="min-h-screen cyber-bg-overlay pb-20 lg:pb-8 flex flex-col transition-colors duration-300">
+    <div className="min-h-screen cyber-bg-overlay pb-24 lg:pb-8 flex flex-col transition-colors duration-300">
       {/* Top Navbar */}
       <Navbar
         user={user}
@@ -366,6 +367,8 @@ export default function Home() {
         onOpenAchievements={() => setAchievementsOpen(true)}
         onOpenParty={() => setPartyHubOpen(true)}
         onOpenFocusTimer={() => setFocusModal({ isOpen: true, quest: null })}
+        onOpenAutoForge={() => setAutoForgeOpen(true)}
+        onOpenMobileHub={() => setMobileHubOpen(true)}
         skillPoints={character.skillPoints || 0}
         readyAchievementsCount={readyAchievementsCount}
         onLogout={handleLogout}
@@ -731,6 +734,23 @@ export default function Home() {
         activeTab={activeTab}
         onChangeTab={(tab) => setActiveTab(tab)}
         onOpenCreateQuest={() => setCreateQuestOpen(true)}
+        onOpenAutoForge={() => setAutoForgeOpen(true)}
+        onOpenFocusTimer={() => setFocusModal({ isOpen: true, quest: null })}
+        onOpenSkills={() => setSkillTreeOpen(true)}
+        onOpenAchievements={() => setAchievementsOpen(true)}
+        onOpenParty={() => setPartyHubOpen(true)}
+        onOpenShareHero={() => setShareHeroOpen(true)}
+        onOpenAvatarVault={() => setAvatarVaultOpen(true)}
+        onOpenEditProfile={() => setEditProfileOpen(true)}
+        skillPoints={character?.skillPoints || 0}
+        readyAchievementsCount={readyAchievementsCount}
+        user={user}
+        character={character}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
+        onLogout={handleLogout}
+        isOpenHubExternal={mobileHubOpen}
+        onCloseHubExternal={() => setMobileHubOpen(false)}
       />
 
       {/* Auto-Forge Daily Routine Modal */}

@@ -48,6 +48,8 @@ interface NavbarProps {
   onOpenAchievements?: () => void;
   onOpenParty?: () => void;
   onOpenFocusTimer?: () => void;
+  onOpenAutoForge?: () => void;
+  onOpenMobileHub?: () => void;
   skillPoints?: number;
   readyAchievementsCount?: number;
   onLogout: () => void;
@@ -66,6 +68,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenAchievements,
   onOpenParty,
   onOpenFocusTimer,
+  onOpenAutoForge,
+  onOpenMobileHub,
   skillPoints = 0,
   readyAchievementsCount = 0,
   onLogout,
@@ -229,14 +233,42 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span>Focus Sprint</span>
               </button>
             )}
+
+            {onOpenAutoForge && (
+              <button
+                onClick={onOpenAutoForge}
+                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-cyan-300 hover:text-white hover:bg-slate-800/60 transition active:scale-95"
+                title="1-Click Auto-Forge Daily Routine"
+              >
+                <Sparkles className="h-3.5 w-3.5 text-cyan-400" />
+                <span>Auto-Forge</span>
+              </button>
+            )}
           </nav>
         )}
 
         {/* Right: Currency Counters, Actions & System Utilities */}
         {user && character && (
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1.5 sm:space-x-2">
+            {/* Mobile Hub Trigger Pill with Badge */}
+            {onOpenMobileHub && (
+              <button
+                onClick={onOpenMobileHub}
+                className="relative md:hidden flex items-center space-x-1 rounded-xl bg-gradient-to-r from-amber-500/15 to-purple-500/15 border border-amber-500/30 px-2.5 py-1 text-xs font-bold text-amber-300 hover:bg-amber-500/25 transition active:scale-95"
+                title="Open Realm Expansions & Hub"
+              >
+                <Sparkles className="h-3.5 w-3.5 text-amber-400" />
+                <span className="hidden xs:inline">Hub</span>
+                {(skillPoints > 0 || readyAchievementsCount > 0) && (
+                  <span className="flex h-3.5 min-w-[14px] px-1 items-center justify-center rounded-full bg-amber-400 text-slate-950 font-black text-[9px] animate-pulse">
+                    {skillPoints + readyAchievementsCount}
+                  </span>
+                )}
+              </button>
+            )}
+
             {/* Streak & Gold Counters Pill */}
-            <div className="flex items-center space-x-2 rounded-xl bg-slate-900/80 border border-slate-800/80 px-2.5 py-1 text-xs">
+            <div className="flex items-center space-x-1.5 sm:space-x-2 rounded-xl bg-slate-900/80 border border-slate-800/80 px-2 sm:px-2.5 py-1 text-xs">
               <div
                 className="flex items-center space-x-1 text-orange-400 font-bold"
                 title={`${character.streak} Day Streak!`}
@@ -254,13 +286,13 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
             </div>
 
-            {/* Quick Create Quest Button */}
+            {/* Quick Create Quest Button (Desktop/Tablet) */}
             <button
               onClick={onOpenCreateQuest}
-              className="flex items-center space-x-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-3 py-1.5 text-xs font-bold text-slate-950 shadow-md shadow-amber-500/20 hover:brightness-110 active:scale-95 transition"
+              className="hidden sm:flex items-center space-x-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-3 py-1.5 text-xs font-bold text-slate-950 shadow-md shadow-amber-500/20 hover:brightness-110 active:scale-95 transition"
             >
               <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
-              <span className="hidden sm:inline">New Quest</span>
+              <span>New Quest</span>
             </button>
 
             {/* Utility Cluster: Audio, Theme, Logout */}
