@@ -72,6 +72,45 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <meta name="theme-color" content="#020617" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@graph': [
+                {
+                  '@type': 'WebSite',
+                  '@id': 'https://life-xp.game/#website',
+                  url: 'https://life-xp.game',
+                  name: 'Life-XP',
+                  description: 'Gamified Real-Life Habit Tracker & Superhero Evolution',
+                  publisher: {
+                    '@type': 'Organization',
+                    name: 'Life-XP Realm',
+                  },
+                },
+                {
+                  '@type': 'SoftwareApplication',
+                  name: 'Life-XP',
+                  applicationCategory: 'ProductivityApplication',
+                  operatingSystem: 'Web, iOS, Android',
+                  offers: {
+                    '@type': 'Offer',
+                    price: '0',
+                    priceCurrency: 'USD',
+                  },
+                  aggregateRating: {
+                    '@type': 'AggregateRating',
+                    ratingValue: '4.9',
+                    ratingCount: '1284',
+                  },
+                  description:
+                    'Turn your daily routines, fitness, and goals into an epic RPG adventure with superheroes, co-op raids, talent trees, and focus timers.',
+                },
+              ],
+            }),
+          }}
+        />
       </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

@@ -11,6 +11,9 @@ import { BossCard } from '@/components/BossCard';
 import { StreakHeatmap } from '@/components/StreakHeatmap';
 import { MobileNav } from '@/components/MobileNav';
 import { AuthView } from '@/components/AuthView';
+import { PublicNavbar } from '@/components/PublicNavbar';
+import { PublicFooter } from '@/components/PublicFooter';
+import { LandingShowcase } from '@/components/LandingShowcase';
 import { CharacterInspectModal } from '@/components/CharacterInspectModal';
 import { LootChestModal } from '@/components/LootChestModal';
 import { DawnReportModal } from '@/components/DawnReportModal';
@@ -50,6 +53,7 @@ export default function Home() {
   const [questTypeFilter, setQuestTypeFilter] = useState('ALL');
   const [attributeFilter, setAttributeFilter] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+  const [authModalTab, setAuthModalTab] = useState<'LOGIN' | 'REGISTER' | null>(null);
 
   // Initialize theme on client
   useEffect(() => {
@@ -350,11 +354,54 @@ export default function Home() {
 
   if (!user || !character) {
     return (
-      <AuthView
-        onSuccess={() => {
-          fetchSessionAndData();
-        }}
-      />
+      <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 cyber-bg-overlay">
+        <PublicNavbar onOpenAuth={(tab) => setAuthModalTab(tab)} />
+        <main className="flex-1">
+          <LandingShowcase
+            onStartFree={() => setAuthModalTab('REGISTER')}
+            onDemoLogin={async () => {
+              try {
+                soundFx.playCoin();
+                const res = await fetch('/api/auth/demo', { method: 'POST' });
+                if (res.ok) {
+                  fetchSessionAndData();
+                }
+              } catch (e) {
+                console.error(e);
+              }
+            }}
+          />
+        </main>
+        <PublicFooter />
+
+        {authModalTab && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in"
+            onClick={() => setAuthModalTab(null)}
+          >
+            <div
+              className="relative w-full max-w-md max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                onClick={() => setAuthModalTab(null)}
+                className="absolute right-4 top-4 z-30 rounded-xl bg-slate-800/80 p-2 text-slate-400 hover:text-white transition"
+                aria-label="Close modal"
+              >
+                ✕
+              </button>
+              <AuthView
+                initialTab={authModalTab}
+                onSuccess={() => {
+                  setAuthModalTab(null);
+                  fetchSessionAndData();
+                }}
+              />
+            </div>
+          </div>
+        )}
+      </div>
     );
   }
 
